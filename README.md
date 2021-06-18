@@ -46,11 +46,28 @@ Een station bevat de volgende attributen:
 Naam | Type | Attribuut | Beschrijving
 --- | --- | --- | ---
 `name` | `string` | Verplicht | De naam van het station.
-`short_name` | `string` | Optioneel | De korte naam van het station; indien leeg wordt de naam hiervoor gebruikt.
+`short_name` | `string` | Optioneel | De korte naam van het station.
 `desc` | `string` | Optioneel | Een beschrijving van het station.
-`node` | `boolean` | Optioneel | Geeft aan of dit station een knooppuntstation is (`true`) of niet (`false`).
+`type` | `string` | Optioneel | Het type van het station/dienstregelingspunt; zie verder voor toegestane waarden. Indien leeg wordt dit ingesteld op `station`.
+`node` | `boolean` | Optioneel | Geeft aan of dit station een knooppuntstation is (`true`) of niet (`false`). Indien leeg wordt dit ingesteld op `false`.
+`train_types` | `array` | Optioneel | Een lijst van ids van treintypes die op dit station stoppen. Indien leeg wordt dit ingesteld op een lege lijst.
+`on_call` | `boolean` | Optioneel | Geeft aan of dit station alleen op afroep wordt bediend (`true`) of dat alle treinen hier stoppen (`false`). Indien leeg wordt dit ingesteld op `false`.
 `x` | `float` | Optioneel | De x-coördinaat of de lengtegraad van het station.
 `y` | `float` | Optioneel | De y-coördinaat of de breedtegraad van het station.
+
+Voor het type van een station kunnen de volgende waarden gebruikt worden:
+
+Waarde | Beschrijving
+--- | ---
+`border` | Grenspost
+`bridge` | Beweegbare spoorbrug
+`cross` | Overloopwissel (kruisingsmogelijkheid op de vrije baan)
+`fork` | Aansluiting (splitsingspunt op de vrije baan)
+`pass` | Inhaalspoor op de vrije baan
+`split` | Splitsing
+`station` | Station
+`unspecified` | Niet nader gespecificeerd
+
 
 #### Specificatie
 
@@ -60,7 +77,10 @@ Een station wordt op de volgende manier gespecificeerd, waarbij de id van het st
 [stations.asd]
 name = "Amsterdam Centraal"
 short_name = "Amsterdam C"
+type = "station"
 node = true
+train_types = ["int", "ic", "spr"]
+on_call = false
 x = 4.900556
 y = 52.378889
 ```
@@ -125,8 +145,8 @@ Naam | Type | Attribuut | Beschrijving
 `type` | `string` | Verplicht | Het type van het punt: `begin` voor een vertrekstation, `end` voor een aankomststation, `stop` voor een vertrek- en aankomststation, `pass` voor een station waar de trein alleen passeert.
 `station` | `string` | Verplicht | De id van het station van het punt.
 `platform` | `string` | Optioneel | Het spoor waarop de trein stopt.
-`arr` | `string` | Verplicht/Optioneel | De tijd waarop de trein op dit station aankomt in de vorm `HH:MM`. Verplicht bij types `stop` en `end`.
-`dep` | `string` | Verplicht/Optioneel | De tijd waarop de trein van dit station vertrekt in de vorm `HH:MM`. Verplicht bij types `begin` en `stop`.
+`a` | `string` | Verplicht/Optioneel | De tijd waarop de trein op dit station aankomt in de vorm `HH:MM`. Verplicht bij types `stop` en `end`.
+`d` | `string` | Verplicht/Optioneel | De tijd waarop de trein van dit station vertrekt in de vorm `HH:MM`. Verplicht bij types `begin` en `stop`.
 
 #### Specificatie
 
