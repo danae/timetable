@@ -63,7 +63,7 @@ Waarde | Beschrijving
 `bridge` | Beweegbare spoorbrug
 `cross` | Overloopwissel (kruisingsmogelijkheid op de vrije baan)
 `fork` | Aansluiting (splitsingspunt op de vrije baan)
-`pass` | Inhaalspoor op de vrije baan
+`over` | Inhaalspoor op de vrije baan
 `split` | Splitsing
 `station` | Station
 `unspecified` | Niet nader gespecificeerd
