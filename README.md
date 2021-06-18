@@ -115,6 +115,7 @@ Naam | Type | Attribuut | Beschrijving
 `type` | `string` | Verplicht | De id van het treintype van de treinserie.
 `name` | `string` | Verplicht | De naam van de treinserie.
 `abbr` | `string` | Optioneel | De afkorting van de treinserie.
+`desc` | `string` | Optioneel | De beschrijving van de treinserie.
 `route` | `table` | Verplicht | De route van de treinserie.
 
 De routetabel van een treinserie is een tabel van routepunten. Een routepunt bevat de volgende attributen:
@@ -163,6 +164,11 @@ Naam | Type | Attribuut | Beschrijving
 `time` | `string` | Verplicht | De vertrektijd van deze trein in de vorm `HH:MM`. De vertrek- een aankomsttijden van de treinserie worden bij deze waarde opgeteld; een `time` van 07:00 met als `dep` van het eerste routepunt om 00:15 vertrekt dus daadwerkelijk om 07:15
 `begin_at_point` | `string` | Optioneel | Indien gespecificeerd begint de trein bij het routepunt met deze id. Laat leeg om bij het begin van de route te beginnen.
 `end_at_point` | `string` | Optioneel | Indien gespecificeerd eindigt de trein bij het routepunt met deze id. Laat leeg om bij het einde van de route te eindigen.
+`agency` | `string` | Optioneel | De id van de vervoerder van de trein.
+`type` | `string` | Optioneel | De id van het treintype van de trein.
+`name` | `string` | Optioneel | De naam van de trein.
+`abbr` | `string` | Optioneel | De afkorting van de trein.
+`desc` | `string` | Optioneel | De beschrijving van de trein.
 
 #### Specificatie
 
