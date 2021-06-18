@@ -1,5 +1,6 @@
 [agencies.ns]
 name = "Nederlandse Spoorwegen"
+abbr = "NS"
 
 [stations]
 rtd = {name = "Rotterdam Centraal", node = true}
@@ -17,7 +18,7 @@ abbr = "IC"
 
 [train_series.500]
 agency = "ns"
-type = "IC"
+type = "ic"
 name = "IC 500 Rotterdam Centraal - Leeuwarden"
 abbr = "500"
 

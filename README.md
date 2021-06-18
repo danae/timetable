@@ -17,6 +17,7 @@ Een vervoerder bevat de volgende attributen:
 Naam | Type | Attribuut | Beschrijving
 --- | --- | --- | ---
 `name` | `string` | Verplicht | De naam van de vervoerder.
+`abbr` | `string` | Optioneel | De afkorting van de vervoerder.
 `desc` | `string` | Optioneel | Een beschrijving van de vervoerder.
 
 #### Specificatie
@@ -45,7 +46,7 @@ Een station bevat de volgende attributen:
 Naam | Type | Attribuut | Beschrijving
 --- | --- | --- | ---
 `name` | `string` | Verplicht | De naam van het station.
-`short_name` | `string` | Optioneel | De korte naam van het station; bij afwezigheid wordt de naam hiervoor gebruikt.
+`short_name` | `string` | Optioneel | De korte naam van het station; indien leeg wordt de naam hiervoor gebruikt.
 `desc` | `string` | Optioneel | Een beschrijving van het station.
 `node` | `boolean` | Optioneel | Geeft aan of dit station een knooppuntstation is (`true`) of niet (`false`).
 `x` | `float` | Optioneel | De x-coördinaat of de lengtegraad van het station.
@@ -81,7 +82,7 @@ Een treintype bevat de volgende attributen:
 Naam | Type | Attribuut | Beschrijving
 --- | --- | --- | ---
 `name` | `string` | Verplicht | De naam van het treintype.
-`abbr` | `string` | Verplicht | De afkorting van het treintype.
+`abbr` | `string` | Optioneel | De afkorting van het treintype.
 `desc` | `string` | Optioneel | Een beschrijving van het treintype.
 
 #### Specificatie
@@ -113,7 +114,7 @@ Naam | Type | Attribuut | Beschrijving
 `agency` | `string` | Verplicht | De id van de vervoerder van de treinserie.
 `type` | `string` | Verplicht | De id van het treintype van de treinserie.
 `name` | `string` | Verplicht | De naam van de treinserie.
-`abbr` | `string` | Verplicht | De afkorting van de treinserie.
+`abbr` | `string` | Optioneel | De afkorting van de treinserie.
 `route` | `table` | Verplicht | De route van de treinserie.
 
 De routetabel van een treinserie is een tabel van routepunten. Een routepunt bevat de volgende attributen:
