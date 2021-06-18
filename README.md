@@ -160,14 +160,14 @@ name = "IC 500 Rotterdam Centraal - Leeuwarden"
 abbr = "500"
 
 [train_series.500.route]
-0 = {type = 'begin', station = "rtd", dep = "00:05"}
-1 = {type = 'stop', station = "rtda", arr = "00:12", dep = "00:13"}
-2 = {type = 'stop', station = "gd", arr = "00:23", dep = "00:24"}
-3 = {type = 'stop', station = "ut", arr = "00:42", dep = "00:49"}
-4 = {type = 'stop', station = "amf", arr = "01:02", dep = "01:04"}
-5 = {type = 'stop', station = "zl", arr = "01:39", dep = "01:45"}
-6 = {type = 'stop', station = "asn", arr = "02:24", dep = "02:25"}
-7 = {type = 'end', station = "gn", arr = "02:42"}
+0 = {type = 'begin', station = "rtd", d = "00:05"}
+1 = {type = 'stop', station = "rtda", a = "00:12", d = "00:13"}
+2 = {type = 'stop', station = "gd", a = "00:23", d = "00:24"}
+3 = {type = 'stop', station = "ut", a = "00:42", d = "00:49"}
+4 = {type = 'stop', station = "amf", a = "01:02", d = "01:04"}
+5 = {type = 'stop', station = "zl", a = "01:39", d = "01:45"}
+6 = {type = 'stop', station = "asn", a = "02:24", d = "02:25"}
+7 = {type = 'end', station = "gn", a = "02:42"}
 ```
 
 Het wordt niet aanbevolen om een verkorte versie voor het definiëren van treinseries te gebruiken.
