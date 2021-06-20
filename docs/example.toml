@@ -1,0 +1,69 @@
+# Feed-informatie
+feed_name = "NS serie 500"
+feed_author = "Danae"
+
+
+# Definities van vervoerders
+[agencies.nl_ns]
+name = "Nederlandse Spoorwegen"
+abbr = "NS"
+
+
+# Definities van stations
+[stations]
+nl_rtd = {name = "Rotterdam Centraal", node = true, train_types = ["nl_ic", "nl_spr"]}
+nl_rtda = {name = "Rotterdam Alexander", train_types = ["nl_ic", "nl_spr"]}
+nl_gd = {name = "Gouda", node = true, train_types = ["nl_ic", "nl_spr"]}
+nl_ut = {name = "Utrecht Centraal", node = true, train_types = ["nl_ic", "nl_spr"]}
+nl_amf = {name = "Amersfoort Centraal", node = true, train_types = ["nl_ic", "nl_spr"]}
+nl_zl = {name = "Zwolle", node = true, train_types = ["nl_ic", "nl_spr"]}
+nl_asn = {name = "Assen", train_types = ["nl_ic", "nl_spr"]}
+nl_gn = {name = "Groningen", node = true, train_types = ["nl_ic", "nl_spr"]}
+
+
+# Definities van treintypes
+[train_types]
+nl_ic = {name = "Intercity", abbr = "IC"}
+nl_spr = {name = "Sprinter", abbr = "SPR"}
+
+
+# Definities van treinseries
+[train_series.nl_500]
+agency = "nl_ns"
+type = "nl_ic"
+name = "IC 500 Rotterdam Centraal - Leeuwarden"
+abbr = "500"
+
+[train_series.nl_500.route]
+00 = {type = 'begin', station = "nl_rtd", d = "00:05"}
+01 = {type = 'stop', station = "nl_rtda", a = "00:12", d = "00:13"}
+02 = {type = 'stop', station = "nl_gd", a = "00:23", d = "00:24"}
+03 = {type = 'stop', station = "nl_ut", a = "00:42", d = "00:49"}
+04 = {type = 'stop', station = "nl_amf", a = "01:02", d = "01:04"}
+05 = {type = 'stop', station = "nl_zl", a = "01:39", d = "01:45"}
+06 = {type = 'stop', station = "nl_asn", a = "02:24", d = "02:25"}
+07 = {type = 'end', station = "nl_gn", a = "02:42"}
+
+
+# Definities van treinen
+[trains]
+nl_515 = {series = "500", time = "05:00", begin_at_point = "05"}
+nl_519 = {series = "500", time = "06:00"}
+nl_523 = {series = "500", time = "07:00"}
+nl_527 = {series = "500", time = "08:00"}
+nl_531 = {series = "500", time = "09:00"}
+nl_535 = {series = "500", time = "10:00"}
+nl_539 = {series = "500", time = "11:00"}
+nl_543 = {series = "500", time = "12:00"}
+nl_547 = {series = "500", time = "13:00"}
+nl_551 = {series = "500", time = "14:00"}
+nl_555 = {series = "500", time = "15:00"}
+nl_559 = {series = "500", time = "16:00"}
+nl_563 = {series = "500", time = "17:00"}
+nl_567 = {series = "500", time = "18:00"}
+nl_571 = {series = "500", time = "19:00"}
+nl_575 = {series = "500", time = "20:00"}
+nl_579 = {series = "500", time = "21:00"}
+nl_583 = {series = "500", time = "22:00"}
+nl_587 = {series = "500", time = "23:00"}
+nl_591 = {series = "500", time = "24:00", ends_at_point = "04"}
