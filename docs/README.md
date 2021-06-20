@@ -33,10 +33,7 @@ name = "Deutsche Bahn"
 abbr = "DB"
 ```
 
-### Algemene opmerkingen
-
-* Indien een id andere tekens bevat dan alfanumerieke tekens of een underscore `A-Z 0-9 _`, moet deze tussen aanhalingstekens ``""`` worden geschreven; `nl_500` en `nl_500a` kunnen dus zonder aanhalingstekens worden geschreven, maar `"at_öbb"` moet met aanhalingstekens worden geschreven.
-* Bij het maken van ids wordt het aanbevolen om de drieletterige landcode voor de id in te voegen, bijvoorbeeld `nl_ns` voor een vervoerder in Nederland.
+Indien een id andere tekens bevat dan alfanumerieke tekens of een underscore `A-Z 0-9 _`, moet deze tussen aanhalingstekens ``""`` worden geschreven; `nl_500` en `[agencies.nl_500a]` kunnen dus zonder aanhalingstekens worden geschreven, maar `[agencies."at_öbb"]` moet met aanhalingstekens worden geschreven. Het woordt aanbevolen om alleen alfanumerieke tekens en underscores in ids te gebruiken.
 
 ### Feed-informatie
 
@@ -161,6 +158,7 @@ Naam | Type | Verplicht | Beschrijving
 `name` | `string` | **Ja** | De naam van het treintype.
 `abbr` | `string` | Nee | De afkorting van het treintype.
 `description` | `string` | Nee | Een optionelebeschrijving van het treintype.
+`priority` | `string` | Nee | De prioriteit van het treintype, waarbij snellere treintypes doorgaans een lager prioriteitsnummer hebben. Indien weggelaten wordt dit veld ingesteld op 0.
 
 #### Voorbeelden
 

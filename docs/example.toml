@@ -23,8 +23,8 @@ nl_gn = {name = "Groningen", node = true, train_types = ["nl_ic", "nl_spr"]}
 
 # Definities van treintypes
 [train_types]
-nl_ic = {name = "Intercity", abbr = "IC"}
-nl_spr = {name = "Sprinter", abbr = "SPR"}
+nl_ic = {name = "Intercity", abbr = "IC", priority = 1}
+nl_spr = {name = "Sprinter", abbr = "SPR", priority = 2}
 
 
 # Definities van treinseries
