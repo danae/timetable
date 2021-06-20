@@ -95,7 +95,7 @@ abbr = "DB"
 
 ### Stations en dienstregelingspunten
 
-Stations en dienstregelingspunten worden gedefinieerd in de `stations`-tabel en bevatten de volgende velden:
+Stations en dienstregelingspunten worden gedefinieerd in de `nodes`-tabel en bevatten de volgende velden:
 
 Naam | Type | Verplicht |  Beschrijving
 --- | --- | --- | ---
@@ -125,27 +125,27 @@ Waarde | Beschrijving
 
 #### Voorbeelden
 
-Een voorbeeld van een `stations`-tabel:
+Een voorbeeld van een `nodes`-tabel:
 
 ```toml
-[stations]
+[nodes]
 nl_rtd = {name = "Rotterdam Centraal", node = true, train_types = ["nl_ic", "nl_spr"]}
 nl_rtda = {name = "Rotterdam Alexander", train_types = ["nl_ic", "nl_spr"]}
 nl_gd = {name = "Gouda", node = true, train_types = ["nl_ic", "nl_spr"]}
 nl_ut = {name = "Utrecht Centraal", node = true, train_types = ["nl_ic", "nl_spr"]}
 ```
 
-Een voorbeeld van een `stations`-tabel met subtabellen:
+Een voorbeeld van een `nodes`-tabel met subtabellen:
 
 ```toml
-[stations.nl_rtd]
+[nodes.nl_rtd]
 name = "Rotterdam Centraal"
 short_name = "Rotterdam C"
 type = "station"
 node = true
 train_types = ["nl_ic", "nl_spr"]
 
-[stations.nl_rtda]
+[nodes.nl_rtda]
 name = "Rotterdam Alexander"
 short_name = "Alexander"
 type = "station"

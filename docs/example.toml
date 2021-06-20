@@ -10,7 +10,7 @@ abbr = "NS"
 
 
 # Definities van stations
-[stations]
+[nodes]
 nl_rtd = {name = "Rotterdam Centraal", node = true, train_types = ["nl_ic", "nl_spr"]}
 nl_rtda = {name = "Rotterdam Alexander", train_types = ["nl_ic", "nl_spr"]}
 nl_gd = {name = "Gouda", node = true, train_types = ["nl_ic", "nl_spr"]}
