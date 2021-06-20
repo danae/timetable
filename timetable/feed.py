@@ -1,4 +1,4 @@
-from .model import Agency, Station, TrainType, TrainSeries, Train
+from .model import Agency, Node, TrainType, TrainSeries, Train
 
 
 # Class that defines a timetable feed
@@ -6,7 +6,7 @@ class Feed:
   # Constructor
   def __init__(self):
     self.agencies = {}
-    self.stations = {}
+    self.nodes = {}
     self.train_types = {}
     self.train_series = {}
     self.trains = {}
@@ -28,22 +28,22 @@ class Feed:
   def get_agency(self, id):
     return self.agencies[id]
 
-  # Register a station
-  def register_station(self, id, **kwargs):
-    if id in self.stations:
-      raise ValueError(f"Duplicate station id {id!r}")
+  # Register a node
+  def register_node(self, id, **kwargs):
+    if id in self.nodes:
+      raise ValueError(f"Duplicate node id {id!r}")
 
-    station = Station(self, id, **kwargs)
-    self.stations[id] = station
+    node = Node(self, id, **kwargs)
+    self.nodes[id] = node
 
-  # Unregister a station
-  def unregister_station(self, id):
-    if id in self.stations:
-      del self.stations[id]
+  # Unregister a node
+  def unregister_node(self, id):
+    if id in self.nodes:
+      del self.nodes[id]
 
-  # Get a station with the specified id
-  def get_station(self, id):
-    return self.stations[id]
+  # Get a node with the specified id
+  def get_node(self, id):
+    return self.nodes[id]
 
   # Register a train type
   def register_train_type(self, id, **kwargs):
@@ -100,5 +100,9 @@ class Feed:
   def report(self):
     buffer = f"Feed {self.name} by {self.author} contains {len(self.trains)} trains"
     for train in sorted(self.trains.values()):
-      buffer += f"\n\n{train.report()}"
+      buffer += f"\n\n{train}\n{train.route}"
     return buffer
+
+  # Return the internal representation for this feed
+  def __repr__(self):
+    return f"<{__name__}.{self.__class__.__name__} {self.name!r}>"

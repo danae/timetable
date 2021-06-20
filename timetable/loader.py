@@ -1,8 +1,8 @@
+import copy
 import toml
 
 from .feed import Feed
-from .model import Agency, StationType, Station, TrainType, TrainSeries, Train, PointType, Point
-from .utils import LenientTime
+from .model import *
 
 
 # Load a feed from a file
@@ -17,14 +17,15 @@ def load_feed(file):
   feed = Feed()
   feed.name = data.get('feed_name')
   feed.author = data.get('feed_author')
+  feed.description = data.get('feed_description')
 
   # Load the agencies
   for id, agency_data in data['agencies'].items():
     _parse_agency(feed, id, agency_data)
 
-  # Load the stations
-  for id, station_data in data['stations'].items():
-    _parse_station(feed, id, station_data)
+  # Load the nodes
+  for id, node_data in data['nodes'].items():
+    _parse_node(feed, id, node_data)
 
   # Load the train types
   for id, train_type_data in data['train_types'].items():
@@ -44,205 +45,119 @@ def load_feed(file):
 
 # Parse an agency
 def _parse_agency(feed, id, data):
-  # Validate required keys
-  if 'name' not in data:
-    raise FeedDecodeError(f"Agency id {id!r}: Key 'name' is missing")
-
-  # Validate optional keys
-  if 'abbr' not in data:
-    data['abbr'] = None
-
-  # Register the agency
-  feed.register_agency(id, **data)
+  try:
+    feed.register_agency(id, **data)
+  except (TypeError, ValueError) as err:
+    raise FeedDecodeError(f"Agency id {id!r}: {err}")
 
 
-# Parse a station
-def _parse_station(feed, id, data):
-  # Validate required keys
-  if 'name' not in data:
-    raise FeedDecodeError(f"Station id {id!r}: Key 'name' is missing")
-
-  # Validate optional keys
-  if 'short_name' not in data:
-    data['short_name'] = data['name']
-  if 'desc' not in data:
-    data['desc'] = None
-  if 'type' not in data:
-    data['type'] = 'station'
-  if 'node' not in data:
-    data['node'] = False
-  if 'train_types' not in data:
-    data['train_types'] = []
-  if 'on_call' not in data:
-    data['on_call'] = False
-  if 'x' not in data:
-    data['x'] = None
-  if 'y' not in data:
-    data['y'] = None
-
-  # Parse the keys
-  if data['type'] is not None:
-    data['type'] = StationType[data['type']]
-
-  # Register the station
-  feed.register_station(id, **data)
+# Parse a node
+def _parse_node(feed, id, data):
+  try:
+    feed.register_node(id, **data)
+  except (TypeError, ValueError) as err:
+    raise FeedDecodeError(f"Node id {id!r}: {err}")
 
 
 # Parse a train type
 def _parse_train_type(feed, id, data):
-  # Validate required keys
-  if 'name' not in data:
-    raise FeedDecodeError(f"Train type id {id!r}: Key 'name' is missing")
-
-  # Validate optional keys
-  if 'abbr' not in data:
-    data['abbr'] = None
-  if 'desc' not in data:
-    data['desc'] = None
-
-  # Register the train type
-  feed.register_train_type(id, **data)
+  try:
+    feed.register_train_type(id, **data)
+  except (TypeError, ValueError) as err:
+    raise FeedDecodeError(f"Train type id {id!r}: {err}")
 
 
 # Parse a train series
 def _parse_train_series(feed, id, data):
-  # Validate required keys
-  if 'agency' not in data:
-    raise FeedDecodeError(f"Train series id {id!r}: Key 'agency' is missing")
-  if 'type' not in data:
-    raise FeedDecodeError(f"Train series id {id!r}: Key 'type' is missing")
-  if 'name' not in data:
-    raise FeedDecodeError(f"Train series id {id!r}: Key 'name' is missing")
-  if 'abbr' not in data:
-    raise FeedDecodeError(f"Train series id {id!r}: Key 'abbr' is missing")
-  if 'route' not in data:
-    #raise FeedDecodeError(f"Train series id {id!r}: Key 'route' is missing")
-    data['route'] = {}
+  try:
+    # TODO: Make route required
+    if 'route' in data:
+      data['route'] = _parse_route(feed, data['route'])
+    else:
+      data['route'] = Route(feed, [])
 
-  # Validate optional keys
-  if 'desc' not in data:
-    data['desc'] = None
-
-  # Parse the keys
-  data['agency'] = feed.get_agency(data['agency'])
-  data['type'] = feed.get_train_type(data['type'])
-  data['route'] = [_parse_point(feed, id, point_order, point_data) for point_order, point_data in data['route'].items()]
-
-  # Register the train series
-  feed.register_train_series(id, **data)
+    feed.register_train_series(id, **data)
+  except (TypeError, ValueError) as err:
+    raise FeedDecodeError(f"Train series id {id!r}: {err}")
 
 
 # Parse a train
 def _parse_train(feed, id, data):
-  # If the train has a route, then it is a standalone train
-  if 'route' in data:
+  try:
+    # If the train has a route, then it is a standalone train
+    if 'route' in data:
+      # Parse the keys
+      data['time'] = LenientTime.parse(data['time'])
+
+      # TODO: Make route required
+      if 'route' in data:
+        data['route'] = _parse_route(feed, data['route'])
+      else:
+        data['route'] = Route(feed, [])
+
+    # Otherwise it is a series train
+    else:
+      # Validate required series keys
+      if 'series' not in data:
+        raise FeedDecodeError(f"Train id {id!r}: Key 'data' is missing")
+      if 'time' not in data:
+        raise FeedDecodeError(f"Train id {id!r}: Key 'data' is missing")
+
+      # Validate optional series keys
+      if 'begin_at_point' not in data:
+        data['begin_at_point'] = None
+      if 'end_at_point' not in data:
+        data['end_at_point'] = None
+
+      # Parse the series keys
+      series = feed.get_train_series(data['series'])
+
+      data['time'] = Time.parse(data['time'])
+      data['agency'] = data.get('agency', series.agency)
+      data['type'] = data.get('type', series.type)
+      data['name'] = data.get('name', series.name)
+      data['route'] = _calculate_route(series, data['time'], data['begin_at_point'], data['end_at_point'])
+
+    # Register the train
+    feed.register_train(id, **data)
+  except (TypeError, ValueError) as err:
+    raise FeedDecodeError(f"Train id {id!r}: {err}")
+
+
+# Parse a route
+def _parse_route(feed, datas):
+  # Create a list for the points
+  points = []
+
+  # Iterate over the items
+  for sequence, data in datas.items():
     # Validate required keys
-    if 'agency' not in data:
-      raise FeedDecodeError(f"Train id {id!r}: Key 'agency' is missing")
     if 'type' not in data:
-      raise FeedDecodeError(f"Train id {id!r}: Key 'type' is missing")
-    if 'name' not in data:
-      raise FeedDecodeError(f"Train id {id!r}: Key 'name' is missing")
+      raise FeedDecodeError(f"Point sequence {sequence!r}: Key 'type' is missing")
 
-    # Parse the keys
-    data['series'] = None
-    data['agency'] = feed.get_agency(data['agency'])
-    data['type'] = feed.get_train_type(data['type'])
-    data['route'] = [_parse_point(feed, id, point_order, point_data) for point_order, point_data in data['route'].items()]
+    # Return the point
+    points.append(RoutePoint(feed, sequence, **data))
 
-  # Otherwise it is a series train
-  else:
-    # Validate required series keys
-    if 'series' not in data:
-      raise FeedDecodeError(f"Train id {id!r}: Key 'data' is missing")
-    if 'time' not in data:
-      raise FeedDecodeError(f"Train id {id!r}: Key 'data' is missing")
-
-    # Validate optional series keys
-    if 'begin_at_point' not in data:
-      data['begin_at_point'] = None
-    if 'end_at_point' not in data:
-      data['end_at_point'] = None
-
-    # Parse the series keys
-    data['series'] = feed.get_train_series(data['series'])
-    data['time'] = LenientTime.parse(data['time'])
-    data['agency'] = feed.get_agency(data['agency']) if 'agency' in data else data['series'].agency
-    data['type'] = feed.get_train_type(data['type']) if 'type' in data else data['series'].type
-    data['name'] = data['name'] if 'name' in data else data['series'].name
-    data['route'] = _calculate_route(data['series'], data['time'], data['begin_at_point'], data['end_at_point'])
-
-  # Register the train
-  feed.register_train(id, **data)
-
-
-# Parse a point
-def _parse_point(feed, train_id, order, data):
-  # Validate required keys
-  if 'type' not in data:
-    raise FeedDecodeError(f"Point order {order!r}: Key 'name' is missing")
-
-  # Validate optional keys
-  if 'a' not in data:
-    data['a'] = None
-  if 'd' not in data:
-    data['d'] = None
-
-  # Parse the keys
-  data['type'] = PointType[data['type']]
-  data['station'] = feed.get_station(data['station'])
-  if data['a'] is not None:
-    data['a'] = LenientTime.parse(data['a'])
-  if data['d'] is not None:
-    data['d'] = LenientTime.parse(data['d'])
-
-  # Return the point
-  return Point(order, data['type'], data['station'], data['a'], data['d'])
+  # Return a new route with the points
+  return Route(feed, points)
 
 
 # Calculate the route of a series train
 def _calculate_route(series, time, begin_at_point, end_at_point):
   # Get the route from the series
-  route = series.route
+  route = copy.deepcopy(series.route)
 
   # Calculate the begin and end points
   if begin_at_point is not None:
-    begin_point = next(filter(lambda point: point.order == begin_at_point, route), None)
-    if begin_point is None:
-      raise FeedDecodeError(f"Point order {begin_at_point} is undefined")
-    begin_index = route.index(begin_point)
-    route = route[begin_index:]
-
+    route = route[begin_at_point:]
   if end_at_point is not None:
-    end_point = next(filter(lambda point: point.order == end_at_point, route), None)
-    if end_point is None:
-      raise FeedDecodeError(f"Point order {begin_at_point} is undefined")
-    end_index = route.index(end_point)
-    route = route[:end_index + 1]
+    route = route[:end_at_point]
 
-  # Create a new route
-  actual_route = []
-  for i, point in enumerate(route):
-    # Create a new point
-    actual_a = time + point.arrival if point.type in [PointType.stop, PointType.end] else None
-    actual_d = time + point.departure if point.type in [PointType.begin, PointType.stop] else None
-    actual_point = Point(point.order, point.type, point.station, actual_a, actual_d)
+  # Calculate the time
+  route = route.apply_time(time)
 
-    # If this is the first point, make the point a begin
-    if i == 0 and actual_point.type != PointType.over:
-      actual_point.type = PointType.begin
-      actual_point.arrival = None
-
-    # If this is the last point, make the point an end
-    if i == len(route) - 1 and actual_point.type != PointType.over:
-      actual_point.type = PointType.end
-      actual_point.departure = None
-
-    # Add the actual point
-    actual_route.append(actual_point)
-
-  # Return the actual route
-  return actual_route
+  # Return the route
+  return route
 
 
 # Class that defines a feed decode error

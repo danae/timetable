@@ -11,8 +11,12 @@ def main(args):
   args = parser.parse_args(args[1:])
 
   # Parse the timetable files
-  feed = timetable.load_feed(args.file)
-  print(feed.report())
+  try:
+    feed = timetable.load_feed(args.file)
+    print(feed.report())
+  except timetable.FeedDecodeError as err:
+    print(err)
+    raise
 
 
 # Execute the main function

@@ -200,7 +200,7 @@ De `route`-tabel van een treinserie bevat routepunten met de volgende velden:
 Naam | Type | Verplicht | Beschrijving
 --- | --- | --- | ---
 `type` | `string` | **Ja** | Het type van het routepuntwaarbij een van de later genoemde waarden gebruikt kan worden.
-`station` | `string` | **Ja** | De id van het station van het routepunt.
+`node` | `string` | **Ja** | De id van het station van het routepunt.
 `platform` | `string` | Nee | Het spoor waarop de trein stopt.
 `a` | `string` | Zie verder | De tijd waarop de trein op dit station aankomt in de vorm `HH:MM`. Verplicht bij types `stop` en `end`.
 `d` | `string` | Zie verder | De tijd waarop de trein van dit station vertrekt in de vorm `HH:MM`. Verplicht bij types `begin` en `stop`.
