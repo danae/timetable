@@ -1,3 +1,2 @@
-from .feed import Feed
 from .loader import load_feed, FeedDecodeError
-from .model import Agency, Node, NodeType, TrainType, TrainSeries, Train, Route, RoutePoint, RoutePointType, Time
+from .model import Feed, Agency, Node, NodeType, TrainType, TrainSet, Train, Route, RoutePoint, RoutePointType, Time

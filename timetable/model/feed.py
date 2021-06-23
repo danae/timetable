@@ -1,14 +1,18 @@
-from .model import Agency, Node, TrainType, TrainSeries, Train
+from .agency import Agency
+from .node import Node
+from .train import Train
+from .train_set import TrainSet
+from .train_type import TrainType
 
 
-# Class that defines a timetable feed
+# Class that defines a feed
 class Feed:
   # Constructor
   def __init__(self):
     self.agencies = {}
     self.nodes = {}
     self.train_types = {}
-    self.train_series = {}
+    self.train_sets = {}
     self.trains = {}
 
   # Register an agency
@@ -28,6 +32,10 @@ class Feed:
   def get_agency(self, id):
     return self.agencies[id]
 
+  # Get all agencies as a list
+  def get_agencies(self):
+    return list(self.agencies.values())
+
   # Register a node
   def register_node(self, id, **kwargs):
     if id in self.nodes:
@@ -44,6 +52,10 @@ class Feed:
   # Get a node with the specified id
   def get_node(self, id):
     return self.nodes[id]
+
+  # Get all nodes as a list
+  def get_nodes(self):
+    return list(self.nodes.values())
 
   # Register a train type
   def register_train_type(self, id, **kwargs):
@@ -62,22 +74,30 @@ class Feed:
   def get_train_type(self, id):
     return self.train_types[id]
 
-  # Register a train series
-  def register_train_series(self, id, **kwargs):
-    if id in self.train_series:
-      raise ValueError(f"Duplicate train series id {id!r}")
+  # Get all train types as a list
+  def get_train_types(self):
+    return list(self.train_types.values())
 
-    train_series = TrainSeries(self, id, **kwargs)
-    self.train_series[id] = train_series
+  # Register a train set
+  def register_train_set(self, id, **kwargs):
+    if id in self.train_sets:
+      raise ValueError(f"Duplicate train set id {id!r}")
 
-  # Unregister a train series
-  def unregister_train_series(self, id):
-    if id in self.train_series:
-      del self.train_series[id]
+    train_set = TrainSet(self, id, **kwargs)
+    self.train_sets[id] = train_set
 
-  # Get a train series with the specified id
-  def get_train_series(self, id):
-    return self.train_series[id]
+  # Unregister a train set
+  def unregister_train_set(self, id):
+    if id in self.train_sets:
+      del self.train_sets[id]
+
+  # Get a train set with the specified id
+  def get_train_set(self, id):
+    return self.train_sets[id]
+
+  # Get all train sets as a list
+  def get_train_sets(self):
+    return list(self.train_sets.values())
 
   # Register a train
   def register_train(self, id, **kwargs):
@@ -95,6 +115,10 @@ class Feed:
   # Get a train with the specified id
   def get_train(self, id):
     return self.trains[id]
+
+  # Get all trains as a list
+  def get_trains(self):
+    return list(self.trains.values())
 
   # Print information about this feed
   def report(self):

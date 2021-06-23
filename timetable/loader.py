@@ -1,7 +1,6 @@
 import copy
 import toml
 
-from .feed import Feed
 from .model import *
 
 
@@ -31,9 +30,9 @@ def load_feed(file):
   for id, train_type_data in data['train_types'].items():
     _parse_train_type(feed, id, train_type_data)
 
-  # Load the train series
-  for id, train_series_data in data['train_series'].items():
-    _parse_train_series(feed, id, train_series_data)
+  # Load the train sets
+  for id, train_set_data in data['train_sets'].items():
+    _parse_train_set(feed, id, train_set_data)
 
   # Load the trains
   for id, train_data in data['trains'].items():
@@ -67,8 +66,8 @@ def _parse_train_type(feed, id, data):
     raise FeedDecodeError(f"Train type id {id!r}: {err}")
 
 
-# Parse a train series
-def _parse_train_series(feed, id, data):
+# Parse a train set
+def _parse_train_set(feed, id, data):
   try:
     # TODO: Make route required
     if 'route' in data:
@@ -76,9 +75,9 @@ def _parse_train_series(feed, id, data):
     else:
       data['route'] = Route(feed, [])
 
-    feed.register_train_series(id, **data)
+    feed.register_train_set(id, **data)
   except (TypeError, ValueError) as err:
-    raise FeedDecodeError(f"Train series id {id!r}: {err}")
+    raise FeedDecodeError(f"Train set id {id!r}: {err}")
 
 
 # Parse a train
@@ -97,11 +96,11 @@ def _parse_train(feed, id, data):
 
     # Otherwise it is a series train
     else:
-      # Validate required series keys
-      if 'series' not in data:
-        raise FeedDecodeError(f"Train id {id!r}: Key 'data' is missing")
+      # Validate required set keys
+      if 'set' not in data:
+        raise FeedDecodeError(f"Train id {id!r}: Key 'set' is missing")
       if 'time' not in data:
-        raise FeedDecodeError(f"Train id {id!r}: Key 'data' is missing")
+        raise FeedDecodeError(f"Train id {id!r}: Key 'time' is missing")
 
       # Validate optional series keys
       if 'begin_at_point' not in data:
@@ -109,14 +108,18 @@ def _parse_train(feed, id, data):
       if 'end_at_point' not in data:
         data['end_at_point'] = None
 
-      # Parse the series keys
-      series = feed.get_train_series(data['series'])
+      # Parse the set keys
+      set = feed.get_train_set(data['set'])
 
       data['time'] = Time.parse(data['time'])
-      data['agency'] = data.get('agency', series.agency)
-      data['type'] = data.get('type', series.type)
-      data['name'] = data.get('name', series.name)
-      data['route'] = _calculate_route(series, data['time'], data['begin_at_point'], data['end_at_point'])
+      data['agency'] = data.get('agency', set.agency)
+      data['type'] = data.get('type', set.type)
+      data['name'] = data.get('name', set.name)
+      data['abbr'] = data.get('abbr', set.abbr)
+      data['description'] = data.get('description', set.description)
+      data['color_text'] = data.get('color_text', set.color_text)
+      data['color_bg'] = data.get('color_bg', set.color_bg)
+      data['route'] = _calculate_route(set, data['time'], data['begin_at_point'], data['end_at_point'])
 
     # Register the train
     feed.register_train(id, **data)
@@ -142,16 +145,16 @@ def _parse_route(feed, datas):
   return Route(feed, points)
 
 
-# Calculate the route of a series train
-def _calculate_route(series, time, begin_at_point, end_at_point):
-  # Get the route from the series
-  route = copy.deepcopy(series.route)
+# Calculate the route based on a train set
+def _calculate_route(set, time, begin_at_point, end_at_point):
+  # Get the route from the set
+  route = copy.deepcopy(set.route)
 
   # Calculate the begin and end points
   if begin_at_point is not None:
-    route = route[begin_at_point:]
+    route = route.as_beginning_at_sequence(begin_at_point)
   if end_at_point is not None:
-    route = route[:end_at_point]
+    route = route.as_ending_at_sequence(end_at_point)
 
   # Calculate the time
   route = route.apply_time(time)

@@ -1,3 +1,5 @@
+import collections
+import copy
 import functools
 
 
@@ -29,6 +31,18 @@ class Agency:
       return NotImplemented
     return self.name == other.name
 
+  # Return a copy of this agency
+  def __copy__(self):
+    return Agency(self.feed, self.id,
+      name = self.name,
+      abbr = self.abbr,
+      description = self.description,
+    )
+
+  # Return a deep copy of this agency
+  def __deepcopy__(self, memo):
+    return copy.copy(self)
+
   # Return the internal representation for this agency
   def __repr__(self):
     return f"<{__name__}.{self.__class__.__name__} {self.id!r}>"
@@ -36,3 +50,12 @@ class Agency:
   # Return the string representation for this agency
   def __str__(self):
     return self.abbr or self.name
+
+  # Return the JSON representation for this agency
+  def to_json(self):
+    return collections.OrderedDict(
+      id = self.id,
+      name = self.name,
+      abbr = self.abbr,
+      description = self.description,
+    )

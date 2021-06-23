@@ -1,3 +1,4 @@
+import collections
 import copy
 import enum
 import functools
@@ -13,19 +14,55 @@ class Route:
     self.feed = feed
     self.points = points
 
-    # TODO: Make route required
-    #if not self.points:
-    #  raise ValueError("Points cannot be empty")
-
   # Return the departure point of this route
   @property
   def departure(self):
-    return self.points[0]
+    return self.points[0] if self.points else None
 
   # Return the arrival point of this route
   @property
   def arrival(self):
-    return self.points[-1]
+    return self.points[-1] if self.points else None
+
+  # Return the time of this route
+  @property
+  def time(self):
+    return self.departure.departure or self.arrival.arrival
+
+  # Return an item from this route with the specified index
+  def __getitem__(self, index):
+    if isinstance(index, slice):
+      return Route(self.feed, self.points[index])
+    else:
+      return self.points[index]
+
+  # Return an iterator for this route
+  def __iter__(self):
+    return iter(self.points)
+
+  # Return the length for this route
+  def __len__(self):
+    return len(self.points)
+
+  # Return the boolean value for this route
+  def __bool__(self):
+    return bool(self.points)
+
+  # Strip points in the route
+  def _strip_points(self):
+    if len(self.points) == 0:
+      return
+    elif len(self.points) == 1:
+      if self.points[0].type != RoutePointType.over:
+        self.points[0].type = RoutePointType.end
+        self.points[0].departure = None
+    else:
+      if self.points[0].type != RoutePointType.over:
+        self.points[0].type = RoutePointType.begin
+        self.points[0].arrival = None
+      if self.points[-1].type != RoutePointType.over:
+        self.points[-1].type = RoutePointType.end
+        self.points[-1].departure = None
 
   # Return the point with the specified sequence
   def get_point_at_sequence(self, sequence):
@@ -38,79 +75,70 @@ class Route:
   def get_index_at_sequence(self, sequence):
     return self.points.index(self.get_point_at_sequence(sequence))
 
+  # Return the route beginning at the specified sequence
+  def as_beginning_at_sequence(self, sequence, *, strip_points = True):
+    index = self.get_index_at_sequence(sequence)
+    route = Route(self.feed, copy.deepcopy(self.points)[index:])
+    if strip_points:
+      route._strip_points()
+    return route
+
+  # Return the route starting at the specified sequence
+  def as_ending_at_sequence(self, sequence, *, strip_points = True):
+    index = self.get_index_at_sequence(sequence)
+    route = Route(self.feed, copy.deepcopy(self.points)[:index+1])
+    if strip_points:
+      route._strip_points()
+    return route
+
   # Return the point with the specified node
-  def get_point_at_node(self, node):
+  def get_point_at_node(self, node, *, departures = True, arrivals = True, overs = False):
     try:
-      return next(filter(lambda p: p.node == node, self.points))
+      point = next(filter(lambda p: p.node == node, self.points))
+
+      if point.type == RoutePointType.over and not overs:
+        raise ValueError(f"Only points without a stop found with node {node!r}")
+      if point.type != RoutePointType.end and not departures:
+        raise ValueError(f"Only departure points found with node {node!r}")
+      if point.type == RoutePointType.end and not arrivals:
+        raise ValueError(f"Only arrival points found with node {node!r}")
+
+      return point
     except StopIteration:
       raise ValueError(f"No points found with node {node!r}")
 
+  # Return if the route contains a point with the specified node
+  def has_point_at_node(self, node, *, departures = True, arrivals = True, overs = False):
+    try:
+      self.get_point_at_node(node, departures = departures, arrivals = arrivals, overs = overs)
+      return True
+    except ValueError:
+      return False
+
   # Return the index of the point with the specified node
-  def get_index_at_node(self, node):
-    return self.points.index(self.get_point_at_node(node))
+  def get_index_at_node(self, node, *, departures = True, arrivals = True, overs = False):
+    return self.points.index(self.get_point_at_node(node, departures = departures, arrivals = arrivals, overs = overs))
 
-  # Return the points or a range of points with the specified index, sequence or node(s)
-  def __getitem__(self, index):
-    # Check the type of the index
-    if isinstance(index, int):
-      # Index is an actual index
-      return self.points[index]
-    elif isinstance(index, str):
-      # Index is a sequence
-      return self.get_point_at_sequence(index)
-    elif isinstance(index, Node):
-      # Index is a node
-      return self.get_point_at_node(index)
-    elif isinstance(index, slice):
-      # Check if the step parameter is not weird
-      if index.step is not None and index.step != 1:
-        raise TypeError("Slices must have a step of 1")
+  # Return the route beginning at the specified node
+  def as_beginning_at_node(self, node, *, strip_points = False):
+    index = self.get_index_at_node(node)
+    route = Route(self.feed, copy.deepcopy(self.points)[index:])
+    if strip_points:
+      route._strip_points()
+    return route
 
-      # Check if the start and stop parameters are both None
-      if index.start is None and index.stop is None:
-        return Route(self.feed, copy.deepcopy(self.points))
-
-      # Check the type of the slice indices
-      if (isinstance(index.start, int) or index.start is None) and (isinstance(index.stop, int) or index.stop is None):
-        # Index is a slice of actual indices
-        start_index = index.start
-        end_index = index.stop
-      elif (isinstance(index.start, str) or index.start is None) and (isinstance(index.stop, str) or index.stop is None):
-        # Index is a slice of sequences
-        start_index = self.get_index_at_sequence(index.start) if index.start is not None else None
-        end_index = self.get_index_at_sequence(index.stop) + 1 if index.stop is not None else None
-      elif (isinstance(index.start, None) or index.start is None) and (isinstance(index.stop, None) or index.stop is None):
-        # Index is a slice of nodes
-        start_index = self.get_index_at_node(index.start) if index.start is not None else None
-        end_index = self.get_index_at_node(index.stop) + 1 if index.stop is not None else None
-      else:
-        # Invalid slice index type
-        raise TypeError("Slice indices must be both an int, a string or a node")
-
-      # Create a new route using the start and end indices
-      route = Route(self.feed, copy.deepcopy(self.points)[start_index:end_index])
-
-      # Make the departure point a begin
-      if route.departure.type != RoutePointType.over:
-        route.departure.type = RoutePointType.begin
-        route.departure.arrival = None
-
-      # Make the arrival point an end
-      if route.arrival.type != RoutePointType.over:
-        route.arrival.type = RoutePointType.end
-        route.arrival.departure = None
-
-      # Return the route
-      return route
-    else:
-      # Invalid index type
-      raise TypeError("Index must be an int, a string or a node")
+  # Return the route starting at the specified node
+  def as_ending_at_node(self, node, *, strip_points = False):
+    index = self.get_index_at_node(node)
+    route = Route(self.feed, copy.deepcopy(self.points)[index:])
+    if strip_points:
+      route._strip_points()
+    return route
 
   # Apply a time to all points
   def apply_time(self, time):
     # Mapping function
     def apply(point):
-      #print(f"{point!r}")
       arrival = time + point.arrival if point.type in [RoutePointType.stop, RoutePointType.end] else None
       departure = time + point.departure if point.type in [RoutePointType.begin, RoutePointType.stop] else None
       return RoutePoint(self.feed, point.sequence, type = point.type, node = point.node, arrival = arrival, departure = departure)
@@ -124,6 +152,14 @@ class Route:
       return False
     return self.points == other.points
 
+  # Return a copy of this route
+  def __copy__(self):
+    return Route(self.feed, self.points)
+
+  # Return a deep copy of this route
+  def __deepcopy__(self, memo):
+    return Route(self.feed, copy.deepcopy(self.points, memo))
+
   # Return the string representation for this route
   def __str__(self):
     buffer = f"{self.departure.departure:%H:%M} {self.departure.node} - {self.arrival.arrival:%H:%M} {self.arrival.node}"
@@ -131,11 +167,9 @@ class Route:
       buffer += f"\n  {point}"
     return buffer
 
-  # Return a deep copy of this route
-  def __deepcopy__(self, memo):
-    points = copy.deepcopy(self.points, memo)
-
-    return Route(self.feed, self.points)
+  # Return the JSON representation for this route
+  def to_json(self):
+    return [p.to_json() for p in self.points]
 
 
 # Class that defines a point in a route
@@ -205,6 +239,26 @@ class RoutePoint:
       return NotImplemented
     return self.sequence < other.sequence
 
+  # Return a copy of this route point
+  def __copy__(self):
+    return RoutePoint(self.feed, self.sequence,
+      type = self.type,
+      node = self.node,
+      platform = self.platform,
+      arrival = self.arrival,
+      departure = self.departure,
+    )
+
+  # Return a deep copy of this route point
+  def __deepcopy__(self, memo):
+    return RoutePoint(self.feed, self.sequence,
+      type = self.type,
+      node = self.node,
+      platform = self.platform,
+      arrival = copy.deepcopy(self.arrival, memo),
+      departure = copy.deepcopy(self.departure, memo),
+    )
+
   # Return the internal representation for this route point
   def __repr__(self):
     return f"{self.__class__.__name__}({self.feed!r}, {self.sequence!r}, type={self.type!r}, node={self.node!r}, platform={self.platform!r}, arrival={self.arrival!r}, departure={self.departure!r})"
@@ -217,12 +271,16 @@ class RoutePoint:
     buffer += f"{self.node}"
     return buffer
 
-  # Return a deep copy of this route point
-  def __deepcopy__(self, memo):
-    arrival = copy.deepcopy(self.arrival, memo)
-    departure = copy.deepcopy(self.departure, memo)
-
-    return RoutePoint(self.feed, self.sequence, type = self.type, node = self.node, platform = self.platform, arrival = arrival, departure = departure)
+  # Return the JSON representation for this route point
+  def to_json(self):
+    return collections.OrderedDict(
+      sequence = self.sequence,
+      type = self.type.name,
+      node = self.node.to_json(),
+      platform = self.platform,
+      arrival = format(self.arrival, "%H:%M") if self.arrival else None,
+      departure = format(self.departure, "%H:%M") if self.departure else None,
+    )
 
 
 # Enum that defines the type of a route point

@@ -1,3 +1,5 @@
+import collections
+import copy
 import functools
 
 from .agency import Agency
@@ -5,10 +7,10 @@ from .route import Route
 from .train_type import TrainType
 
 
-# Class that defines a train series
-# Train series sort alphabetically based on their ids
+# Class that defines a train set
+# Train sets sort alphabetically based on their ids
 @functools.total_ordering
-class TrainSeries:
+class TrainSet:
   # Constructor
   def __init__(self, feed, id, **kwargs):
     self.feed = feed
@@ -51,30 +53,69 @@ class TrainSeries:
     # Add optional properties
     self.abbr = kwargs.get('abbr')  # Defaults to None
     self.description = kwargs.get('description')  # Defaults to None
+    self.priority = kwargs.get('priority', self.type.priority)  # Defaults to priority of self.type
+    self.color_text = kwargs.get('color_text', 'inherit')  # Defaults to 'inherit'
+    self.color_bg = kwargs.get('color_bg', 'inherit')  # Defaults to 'inherit'
 
-  # Return if this train series equals another object
+  # Return if this train set equals another object
   def __eq__(self, other):
     if not isinstance(other, self.__class__):
       return False
     return self.id == other.id
 
-  # Return if this train series is less than another object
+  # Return if this train set is less than another object
   def __lt__(self, other):
     if not isinstance(other, self.__class__):
       return NotImplemented
     return self.id < other.id
 
-  # Return the internal representation for this train series
+  # Return a copy of this train set
+  def __copy__(self):
+    return TrainSet(self.feed, self.id,
+      agency = self.agency,
+      type = self.type,
+      name = self.name,
+      route = self.route,
+      abbr = self.abbr,
+      description = self.description,
+      priority = self.priority,
+      color_text = self.color_text,
+      color_bg = self.color_bg,
+    )
+
+  # Return a deep copy of this train set
+  def __deepcopy__(self, memo):
+    return TrainSet(self.feed, self.id,
+      agency = self.agency,
+      type = self.type,
+      name = self.name,
+      route = copy.deepcopy(self.route, memo),
+      abbr = self.abbr,
+      description = self.description,
+      priority = self.priority,
+      color_text = self.color_text,
+      color_bg = self.color_bg,
+    )
+
+  # Return the internal representation for this train set
   def __repr__(self):
     return f"<{__name__}.{self.__class__.__name__} {self.id!r}>"
 
-  # Return the string representation for this train series
+  # Return the string representation for this train set
   def __str__(self):
     return f"{self.agency} - {self.type} - {self.name}"
 
-  # Return a report for this train series
-  def report(self):
-    buffer = f"Train series {self}"
-    for point in self.route:
-      buffer += f"\n  {point}"
-    return buffer
+  # Return the JSON representation for this train set
+  def to_json(self):
+    return collections.OrderedDict(
+      id = self.id,
+      agency = self.agency.to_json(),
+      type = self.type.to_json(),
+      name = self.name,
+      abbr = self.abbr,
+      description = self.description,
+      priority = self.priority,
+      color_text = self.color_text,
+      color_bg = self.color_bg,
+      route = self.route.to_json(),
+    )
