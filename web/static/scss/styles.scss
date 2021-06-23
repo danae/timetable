@@ -1,0 +1,101 @@
+// Import variables and fonts
+@import 'variables';
+@import 'bulma';
+
+// Footer styling
+.footer {
+  @extend .is-size-7;
+  @extend .py-5;
+
+  background: none;
+}
+
+// Content styling
+.content {
+  // Heading styling
+  @for $i from 1 through 6
+  {
+    h#{$i} {
+      @extend .is-family-secondary;
+      @extend .has-text-weight-normal;
+
+      @if $i <= 2 {
+        @extend .has-text-primary;
+      }
+    }
+  }
+
+  // Link styling
+  a:not(.button) {
+    color: $link;
+    border-bottom: 1px $link dotted;
+
+    &:active {
+      color: $link-active;
+      border-bottom-color: $link-active;
+    }
+
+    &:hover {
+      color: $link-hover;
+      border-bottom-color: $link-hover;
+    }
+
+    // Inline link
+    &.inline {
+      color: inherit;
+      border-bottom-color: inherit;
+    }
+
+    // Links in the footer have no border
+    .footer > & {
+      border-bottom: none;
+    }
+  }
+
+  // Button styling
+  .button {
+    @extend .is-rounded;
+    @extend .is-outlined;
+
+    &:hover, &:active {
+      .icon {
+        @extend .has-text-light;
+      }
+    }
+
+    &.is-fullwidth {
+      justify-content: flex-start;
+    }
+  }
+
+  // Alignment with margins
+  .is-aligned-left {
+    margin-right: auto !important;
+  }
+  .is-aligned-right {
+    margin-left: auto !important;
+  }
+  .is-aligned-center {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+// Hero styling
+.hero {
+  // Hero cover background
+  &.has-background-cover {
+    background-image: url("../images/melodie_cover.png");
+    background-size: cover;
+    background-position: top;
+    background-repeat: no-repeat;
+  }
+}
+
+// Emoji styling
+.emoji {
+  height: 1em;
+  width: 1em;
+  margin: 0 .05em 0 .1em;
+  vertical-align: -0.1em;
+}

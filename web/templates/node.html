@@ -1,0 +1,84 @@
+{% extends 'index.html' %}
+
+{% block content %}
+  <section class="section content">
+    <h1>Station {{ node }}</h1>
+
+    <div class="columns">
+      <div class="column is-4">
+        <h3>Informatie</h3>
+
+        <table class="table is-bordered is-narrow">
+          <tr>
+            <th style="width:40%">Type</th>
+            <td>{{ node.type }}</td>
+          </tr>
+
+          <tr>
+            <th style="width:40%">Knooppunt</th>
+            <td>{{ node.node }}</td>
+          </tr>
+
+          <tr>
+            <th style="width:40%">Alleen op afroep</th>
+            <td>{{ node.on_call }}</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="column is-8">
+        <h3>Vertrekkende treinen</h3>
+
+        {% if trains %}
+          <table class="table is-striped is-narrow">
+            <thead>
+              <tr>
+                <th class="is-size-7" style="width: 10%;">Vertrek</th>
+                <th class="is-size-7" style="width: 65%;">Naar / Opmerkingen</th>
+                <th class="is-size-7" style="width: 10%;">Spoor</th>
+                <th class="is-size-7" style="width: 15%;">Trein</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% for train in trains %}
+                <tr>
+                  <td>
+                    <p class="mb-0"><b>{{ train.time.__format__('%H:%M') }}</b></p>
+                  </td>
+                  <td>
+                    <p class="is-size-6 mb-0">
+                      <span class="px-1" style="color: {{ train.color_text }}; background-color: {{ train.color_bg }};"><a class="inline" href="{{ url_for('show_train', id = train.id) }}">{{ train.abbr }}</a></span>
+                      <span>naar <b><a class="inline" href="{{ url_for('show_node', id = train.arrival.node.id) }}">{{ train.arrival.node }}</a></b></span>
+                    </p>
+                    {% if train.route.as_beginning_at_node(node)[1:-1] %}
+                      <p class="is-size-7 mb-0">via
+                        {% for p in train.route.as_beginning_at_node(node)[1:-1] %}
+                          {% if not loop.first %}<span>, </span>{% endif %}
+                          <span>
+                            <a class="inline" href="{{ url_for('show_node', id = p.node.id) }}">{{ p.node }}</a>
+                          </span>
+                        {% endfor %}
+                      </p>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <p class="mb-0">{{ train.departure.platform | default('') }}</p>
+                  </td>
+                  <td>
+                    <p class="mb-0">
+                      {{ train.agency }} {{ train.type.name }}
+                    </p>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+        {% else %}
+          <p>Er is op het moment geen informatie beschikbaar</p>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+{% endblock %}
