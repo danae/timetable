@@ -184,7 +184,7 @@ abbr = "IC"
 
 ### Treinseries
 
-Treinseries worden gedefinieerd in de `train_series`-tabel en bevatted de volgende velden:
+Treinseries worden gedefinieerd in de `train_sets`-tabel en bevatten de volgende velden:
 
 Naam | Type | Verplicht | Beschrijving
 --- | --- | --- | ---
@@ -193,6 +193,9 @@ Naam | Type | Verplicht | Beschrijving
 `name` | `string` | **Ja** | De naam van de treinserie.
 `abbr` | `string` | Nee | De afkorting van de treinserie.
 `description` | `string` | Nee | Een optionele beschrijving van de treinserie.
+`priority` | `int` | Nee | De prioriteit van de trein. Indien weggelaten wordt de prioriteit van het treintype gebruikt.
+`color_text` | `string` | Nee | De kleur van de tekst wanneer de treinserie als lijnnummer wordt weergegeven. Indien weggelaten wordt de standaard kleur gebruikt.
+`color_bg` | `string` | Nee | De kleur van de achtergrond wanneer de treinserie als lijnnummer wordt weergegeven. Indien weggelaten wordt de standaard kleur gebruikt.
 `route` | `table` | Nee | De route van de treinserie.
 
 De `route`-tabel van een treinserie bevat routepunten met de volgende velden:
@@ -219,13 +222,13 @@ Waarde | beschrijving
 Een voorbeeld van een `train_series` tabel met subtabellen (het wordt aanbevolen om voor de treintypes geen korte variant te gebruiken vanwege de complexere structuur vna een treinserie):
 
 ```toml
-[train_series.nl_500]
+[train_sets.nl_500]
 agency = "ns"
 type = "IC"
 name = "IC 500 Rotterdam Centraal - Leeuwarden"
 abbr = "500"
 
-[train_series.nl_500.route]
+[train_sets.nl_500.route]
 00 = {type = 'begin', station = "nl_rtd", d = "00:05"}
 01 = {type = 'stop', station = "nl_rtda", a = "00:12", d = "00:13"}
 02 = {type = 'stop', station = "nl_gd", a = "00:23", d = "00:24"}
@@ -243,15 +246,18 @@ Treinen kunnen op twee manieren worden gedefinieerd in de `trains`-tabel:
 
 Naam | Type | Verplicht | Beschrijving
 --- | --- | --- | ---
-`series` | `string` | **Ja** | De id van de treinserie van deze trein.
+`set` | `string` | **Ja** | De id van de treinserie van deze trein.
 `time` | `string` | **Ja** | De vertrektijd van deze trein in de vorm `HH:MM`. De vertrek- een aankomsttijden van de treinserie worden bij deze waarde opgeteld; een `time` van 07:00 met als `d` van het eerste routepunt om 00:15 vertrekt dus daadwerkelijk om 07:15
-`begin_at_point` | `string` | Nee | Indien gespecificeerd begint de trein bij het routepunt met deze id. Laat leeg om bij het begin van de route te beginnen.
-`end_at_point` | `string` | Nee | Indien gespecificeerd eindigt de trein bij het routepunt met deze id. Laat leeg om bij het einde van de route te eindigen.
+`begin_at` | `string` | Nee | Indien gespecificeerd begint de trein bij het routepunt met deze id. Laat leeg om bij het begin van de route te beginnen.
+`end_at` | `string` | Nee | Indien gespecificeerd eindigt de trein bij het routepunt met deze id. Laat leeg om bij het einde van de route te eindigen.
 `agency` | `string` | Nee | De id van de vervoerder van de trein als deze afwijkt van de vervoerder van de treinserie.
 `type` | `string` | Nee | De id van het treintype van de trein als deze afwijkt van het treintype van de treinserie.
 `name` | `string` | Nee | De naam van de trein als deze afwijkt van de naam van de treinserie.
 `abbr` | `string` | Nee | De afkorting van de trein als deze afwijkt van de afkorting van de treinserie.
 `description` | `string` | Nee | Een optionele beschrijving van de trein.
+`color_text` | `string` | Nee | De kleur van de tekst wanneer de treinserie als lijnnummer wordt weergegeven. Indien weggelaten wordt de kleur van de treinserie gebruikt.
+`color_bg` | `string` | Nee | De kleur van de achtergrond wanneer de treinserie als lijnnummer wordt weergegeven. Indien weggelaten wordt de kleur van de treinserie gebruikt.
+`priority` | `int` | Nee | De prioriteit van de trein. Indien weggelaten wordt de prioriteit van het treinserie gebruikt.
 
 * Wanneer een trein een losstaande trein is, d.w.z. geen onderdeel van een treinserie, worden dezelfde velden gebruikt als bij een treinserie, zoals hierboven gespecificeerd. Belangrijk is dat een losstaande trein altijd een `route`-attribuut heeft.
 
@@ -261,10 +267,10 @@ Een voorbeeld van een `trains`-tabel:
 
 ```toml
 [trains]
-nl_515 = {series = "nl_500", time = "05:00", begin_at_point = "05"}
-nl_519 = {series = "nl_500", time = "06:00"}
-nl_523 = {series = "nl_500", time = "07:00"}
-nl_527 = {series = "nl_500", time = "08:00"}
+nl_515 = {set = "nl_500", time = "05:00", begin_at_point = "05"}
+nl_519 = {set = "nl_500", time = "06:00"}
+nl_523 = {set = "nl_500", time = "07:00"}
+nl_527 = {set = "nl_500", time = "08:00"}
 ```
 
 Een voorbeeld van een `trains`-tabel met subtabellen:

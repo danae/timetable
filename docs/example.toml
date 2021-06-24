@@ -28,13 +28,13 @@ nl_spr = {name = "Sprinter", abbr = "SPR", priority = 2}
 
 
 # Definities van treinseries
-[train_series.nl_500]
+[train_sets.nl_500]
 agency = "nl_ns"
 type = "nl_ic"
 name = "IC 500 Rotterdam Centraal - Leeuwarden"
 abbr = "500"
 
-[train_series.nl_500.route]
+[train_sets.nl_500.route]
 00 = {type = 'begin', station = "nl_rtd", d = "00:05"}
 01 = {type = 'stop', station = "nl_rtda", a = "00:12", d = "00:13"}
 02 = {type = 'stop', station = "nl_gd", a = "00:23", d = "00:24"}
@@ -47,23 +47,23 @@ abbr = "500"
 
 # Definities van treinen
 [trains]
-nl_515 = {series = "500", time = "05:00", begin_at_point = "05"}
-nl_519 = {series = "500", time = "06:00"}
-nl_523 = {series = "500", time = "07:00"}
-nl_527 = {series = "500", time = "08:00"}
-nl_531 = {series = "500", time = "09:00"}
-nl_535 = {series = "500", time = "10:00"}
-nl_539 = {series = "500", time = "11:00"}
-nl_543 = {series = "500", time = "12:00"}
-nl_547 = {series = "500", time = "13:00"}
-nl_551 = {series = "500", time = "14:00"}
-nl_555 = {series = "500", time = "15:00"}
-nl_559 = {series = "500", time = "16:00"}
-nl_563 = {series = "500", time = "17:00"}
-nl_567 = {series = "500", time = "18:00"}
-nl_571 = {series = "500", time = "19:00"}
-nl_575 = {series = "500", time = "20:00"}
-nl_579 = {series = "500", time = "21:00"}
-nl_583 = {series = "500", time = "22:00"}
-nl_587 = {series = "500", time = "23:00"}
-nl_591 = {series = "500", time = "24:00", ends_at_point = "04"}
+nl_515 = {set = "500", time = "05:00", begin_at = "05"}
+nl_519 = {set = "500", time = "06:00"}
+nl_523 = {set = "500", time = "07:00"}
+nl_527 = {set = "500", time = "08:00"}
+nl_531 = {set = "500", time = "09:00"}
+nl_535 = {set = "500", time = "10:00"}
+nl_539 = {set = "500", time = "11:00"}
+nl_543 = {set = "500", time = "12:00"}
+nl_547 = {set = "500", time = "13:00"}
+nl_551 = {set = "500", time = "14:00"}
+nl_555 = {set = "500", time = "15:00"}
+nl_559 = {set = "500", time = "16:00"}
+nl_563 = {set = "500", time = "17:00"}
+nl_567 = {set = "500", time = "18:00"}
+nl_571 = {set = "500", time = "19:00"}
+nl_575 = {set = "500", time = "20:00"}
+nl_579 = {set = "500", time = "21:00"}
+nl_583 = {set = "500", time = "22:00"}
+nl_587 = {set = "500", time = "23:00"}
+nl_591 = {set = "500", time = "24:00", end_at = "04"}
