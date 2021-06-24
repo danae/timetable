@@ -103,10 +103,10 @@ def _parse_train(feed, id, data):
         raise FeedDecodeError(f"Train id {id!r}: Key 'time' is missing")
 
       # Validate optional series keys
-      if 'begin_at_point' not in data:
-        data['begin_at_point'] = None
-      if 'end_at_point' not in data:
-        data['end_at_point'] = None
+      if 'begin_at' not in data:
+        data['begin_at'] = None
+      if 'end_at' not in data:
+        data['end_at'] = None
 
       # Parse the set keys
       set = feed.get_train_set(data['set'])
@@ -119,7 +119,7 @@ def _parse_train(feed, id, data):
       data['description'] = data.get('description', set.description)
       data['color_text'] = data.get('color_text', set.color_text)
       data['color_bg'] = data.get('color_bg', set.color_bg)
-      data['route'] = _calculate_route(set, data['time'], data['begin_at_point'], data['end_at_point'])
+      data['route'] = _calculate_route(set, data['time'], data['begin_at'], data['end_at'])
 
     # Register the train
     feed.register_train(id, **data)
@@ -146,15 +146,15 @@ def _parse_route(feed, datas):
 
 
 # Calculate the route based on a train set
-def _calculate_route(set, time, begin_at_point, end_at_point):
+def _calculate_route(set, time, begin_at, end_at):
   # Get the route from the set
   route = copy.deepcopy(set.route)
 
   # Calculate the begin and end points
-  if begin_at_point is not None:
-    route = route.as_beginning_at_sequence(begin_at_point)
-  if end_at_point is not None:
-    route = route.as_ending_at_sequence(end_at_point)
+  if begin_at is not None:
+    route = route.as_beginning_at_sequence(begin_at)
+  if end_at is not None:
+    route = route.as_ending_at_sequence(end_at)
 
   # Calculate the time
   route = route.apply_time(time)
