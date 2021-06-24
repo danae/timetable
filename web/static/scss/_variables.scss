@@ -1,20 +1,59 @@
 // Import the initial variables and fonts
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;700&display=swap');
-@import "../bulma/sass/utilities/initial-variables.sass";
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
+@import "../../node_modules/bulma/sass/utilities/initial-variables.sass";
 
 // Custom fonts
-$family-primary: 'Noto Sans', sans-serif;
-$family-secondary: 'Noto Sans', sans-serif;
+$family-primary: 'Open Sans', sans-serif;
+$family-secondary: 'Open Sans', sans-serif;
 
 // Custom colors
-$primary: #003082;
+$primary: #2ca089;
+$primary-light: #d7f4ee;
+$light: #f2f2f2;
+$dark: #000000;
 
 // Custom derived colors
 $link: $primary;
-$link-active: $black;
-$link-hover: $black;
+$link-active: $primary-light;
+$link-hover: $primary-light;
+$border: $primary;
+$border-hover: $primary;
+$border-light: $primary-light;
+$border-light-hover: $primary-light;
+$radius: 0px;
+$shadow: none;
 
-// Set other variables
+// Other variables
 $body-overflow-y: auto;
-$dimensions: 16 24 32 48 64 96 128 192 256;
-$section-padding: 1.5rem 1.5rem;
+$section-padding: 2rem 2rem;
+$section-padding-desktop: 2rem 2rem;
+
+// Tabs variables
+$tabs-border-bottom-width: 1px;
+$tabs-link-color: $link;
+$tabs-link-hover-color: $link;
+$tabs-link-active-color: $link;
+$tabs-link-padding: 0.5rem 2rem;
+$tabs-boxed-link-radius: 0px;
+$tabs-boxed-link-hover-background-color: $primary-light;
+$tabs-boxed-link-hover-border-bottom-color: $link;
+$tabs-boxed-link-active-border-bottom-color: white;
+$tabs-boxed-link-active-background-color: white;
+
+// Table variables
+$table-cell-border-width: 0px;
+$table-striped-row-even-background-color: $light;
+
+// Form variables
+$input-background-color: $light;
+$input-border-color: $light;
+$input-hover-border-color: $light;
+$input-active-border-color: $light;
+$switch-background: $primary;
+$switch-background-active: $primary;
+
+// Dropdown variables
+$dropdown-menu-min-width: 15rem;
+$dropdown-content-background-color: $light;
+$dropdown-item-hover-color: $white;
+$dropdown-item-hover-background-color: $primary;

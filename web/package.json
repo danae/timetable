@@ -1,0 +1,11 @@
+{
+  "name": "mekatoris",
+  "version": "1.0.0",
+  "description": "",
+  "author": "danae",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "bulma": "^0.9.3",
+    "bulma-switch": "^2.0.0"
+  }
+}
