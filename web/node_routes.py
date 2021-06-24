@@ -9,8 +9,14 @@ node_routes_blueprint = flask.Blueprint('nodes', __name__)
 # Return all nodes as JSON
 @node_routes_blueprint.route('/nodes.json')
 def get_nodes():
+  # Get the query
+  q = flask.request.args.get('q')
+
   # Get all nodes
-  nodes = flask.g.feed.get_nodes()
+  if q is not None:
+    nodes = flask.g.feed.query_nodes(q)
+  else:
+    nodes = flask.g.feed.get_nodes()
 
   # Return the nodes as JSON
   return flask.jsonify([node.to_json() for node in nodes])

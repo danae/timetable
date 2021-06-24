@@ -28,13 +28,13 @@ class Feed:
     if agency_id in self.agencies:
       del self.agencies[id]
 
+  # Get all agencies
+  def get_agencies(self):
+    return list(self.agencies.values())
+
   # Get an agency with the specified id
   def get_agency(self, id):
     return self.agencies[id]
-
-  # Get all agencies as a list
-  def get_agencies(self):
-    return list(self.agencies.values())
 
   # Register a node
   def register_node(self, id, **kwargs):
@@ -49,13 +49,24 @@ class Feed:
     if id in self.nodes:
       del self.nodes[id]
 
+  # Get all nodes
+  def get_nodes(self):
+    return self.nodes.values()
+
+  # Get all nodes matching a query
+  def query_nodes(self, query):
+    return self.query(self.nodes.values(), query, 'name')
+
   # Get a node with the specified id
   def get_node(self, id):
     return self.nodes[id]
 
-  # Get all nodes as a list
-  def get_nodes(self):
-    return list(self.nodes.values())
+  # Get a node matching a query
+  def query_node(self, query):
+    try:
+      return next(iter(self.query_nodes(query)))
+    except StopIteration:
+      raise KeyError(query)
 
   # Register a train type
   def register_train_type(self, id, **kwargs):
@@ -120,12 +131,39 @@ class Feed:
   def get_trains(self):
     return list(self.trains.values())
 
-  # Print information about this feed
-  def report(self):
-    buffer = f"Feed {self.name} by {self.author} contains {len(self.trains)} trains"
-    for train in sorted(self.trains.values()):
-      buffer += f"\n\n{train}\n{train.route}"
-    return buffer
+  # Query a list of elements
+  def query(self, elements, query, *attributes):
+    # Get the default attributes
+    attributes = attributes or ['name']
+
+    # Get the order of a value
+    def order(value):
+      if not isinstance(value, str):
+        return -1
+      return value.lower().find(query.lower())
+
+    # Get the orders of an element
+    def orders(element):
+      for attribute in attributes:
+        try:
+          value = getattr(element, attribute)
+          yield order(value)
+        except AttributeError:
+          yield -1
+
+    # Create a list of matched elements
+    matched = []
+    for element in elements:
+      element_orders = tuple(orders(element))
+      if -1 in element_orders:
+        continue
+      matched.append((element_orders, element))
+
+    # Sort the matched elements
+    matched = sorted(matched)
+
+    # Return the actual matched elements
+    return [element for _, element in matched]
 
   # Return the internal representation for this feed
   def __repr__(self):
