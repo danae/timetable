@@ -168,7 +168,6 @@ Naam | Type | Verplicht | Beschrijving
 --- | --- | --- | ---
 `name` | `string` | **Ja** | De naam van de vervoerswijze.
 `abbr` | `string` | Nee | De afkorting van de vervoerswijze.
-`description` | `string` | Nee | Een optionelebeschrijving van de vervoerswijze.
 `type` | `string` | Nee | Het type van de vervoerswijze, waarbij een van de later genoemde waarden gebruikt kan worden. Indien weggelaten wordt dit veld ingesteld op `rail`.
 `priority` | `string` | Nee | De prioriteit van het treintype, waarbij snellere treintypes doorgaans een lager prioriteitsnummer hebben. Indien weggelaten wordt dit veld ingesteld op 0.
 `color_text` | `string` | Nee | De kleur van de tekst wanneer de vervoerswijze als lijnnummer wordt weergegeven. Indien weggelaten wordt de standaard kleur gebruikt.
