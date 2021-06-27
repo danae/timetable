@@ -1,10 +1,8 @@
 import collections
-import copy
 import functools
 
 
 # Class that defines an agency
-# Agencies sort alphabetically based on their names
 @functools.total_ordering
 class Agency:
   # Constructor
@@ -17,7 +15,14 @@ class Agency:
 
     # Add optional properties
     self.abbr = kwargs.get('abbr')  # Defaults to None
-    self.description = kwargs.get('description')  # Defaults to None
+
+  # Return the routes that are part of this agency
+  def get_routes_with_agency(self):
+    return filter(lambda route: route.agency == self, self.feed.get_routes())
+
+  # Return the trips that are part of this agency
+  def get_trips_with_agency(self):
+    return filter(lambda trip: trip.agency == self, self.feed.get_trips())
 
   # Return if this agency equals another object
   def __eq__(self, other):
@@ -29,23 +34,15 @@ class Agency:
   def __lt__(self, other):
     if not isinstance(other, self.__class__):
       return NotImplemented
-    return self.name == other.name
+    return (self.name, self.id) == (other.name, other.id)
 
-  # Return a copy of this agency
-  def __copy__(self):
-    return Agency(self.feed, self.id,
-      name = self.name,
-      abbr = self.abbr,
-      description = self.description,
-    )
-
-  # Return a deep copy of this agency
-  def __deepcopy__(self, memo):
-    return copy.copy(self)
+  # Return the hash for this agency
+  def __hash__(self):
+    return hash((self.id))
 
   # Return the internal representation for this agency
   def __repr__(self):
-    return f"<{__name__}.{self.__class__.__name__} {self.id!r}>"
+    return f"<{self.__class__.__name__} {self.id!r}>"
 
   # Return the string representation for this agency
   def __str__(self):

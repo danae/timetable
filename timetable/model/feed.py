@@ -1,170 +1,94 @@
-from .agency import Agency
-from .node import Node
-from .train import Train
-from .train_set import TrainSet
-from .train_type import TrainType
-
-
-# Class that defines a feed
+# Class that defines a transit feed
 class Feed:
   # Constructor
-  def __init__(self):
+  def __init__(self, **kwargs):
     self.agencies = {}
     self.nodes = {}
-    self.train_types = {}
-    self.train_sets = {}
-    self.trains = {}
+    self.modalities = {}
+    self.routes = {}
+    self.trips = {}
+    self.transfers = {}
 
-  # Register an agency
-  def register_agency(self, id, **kwargs):
-    if id in self.agencies:
-      raise ValueError(f"Duplicate agency id {id!r}")
+    # Add optional properties
+    self.id = kwargs.get('id')  # Defaults to None
+    self.name = kwargs.get('name')  # Defaults to None
+    self.author = kwargs.get('author')  # Defaults to None
 
-    agency = Agency(self, id, **kwargs)
-    self.agencies[id] = agency
-
-  # Unregister an agency
-  def unregister_agency(self, id):
-    if agency_id in self.agencies:
-      del self.agencies[id]
-
-  # Get all agencies
+  # Return all agencies
   def get_agencies(self):
     return list(self.agencies.values())
 
-  # Get an agency with the specified id
+  # Return an agency with the specified id
   def get_agency(self, id):
-    return self.agencies[id]
+    try:
+      return self.agencies[id]
+    except KeyError:
+      raise ValueError(f"Undefined agency with id {id!r}")
 
-  # Register a node
-  def register_node(self, id, **kwargs):
-    if id in self.nodes:
-      raise ValueError(f"Duplicate node id {id!r}")
-
-    node = Node(self, id, **kwargs)
-    self.nodes[id] = node
-
-  # Unregister a node
-  def unregister_node(self, id):
-    if id in self.nodes:
-      del self.nodes[id]
-
-  # Get all nodes
+  # Return all nodes
   def get_nodes(self):
     return self.nodes.values()
 
-  # Get all nodes matching a query
-  def query_nodes(self, query):
-    return self.query(self.nodes.values(), query, 'name')
-
-  # Get a node with the specified id
+  # Return a node with the specified id
   def get_node(self, id):
-    return self.nodes[id]
-
-  # Get a node matching a query
-  def query_node(self, query):
     try:
-      return next(iter(self.query_nodes(query)))
-    except StopIteration:
-      raise KeyError(query)
+      return self.nodes[id]
+    except KeyError:
+      raise ValueError(f"Undefined node with id {id!r}")
 
-  # Register a train type
-  def register_train_type(self, id, **kwargs):
-    if id in self.train_types:
-      raise ValueError(f"Duplicate train type id {id!r}")
+  # Return a node with the specified name, or a default value if no such node exists
+  def get_node_by_name(self, name, default = None):
+    return next(filter(lambda node: node.name == name, self.get_nodes()), default)
 
-    train_type = TrainType(self, id, **kwargs)
-    self.train_types[id] = train_type
+  # Return all transfers
+  def get_transfers(self):
+    return self.transfers.values()
 
-  # Unregister a train type
-  def unregister_train_type(self, id):
-    if id in self.train_types:
-      del self.train_types[id]
+  # Return a transfer with the specified id
+  def get_transfer(self, id):
+    try:
+      return self.transfers.get[id]
+    except KeyError:
+      raise ValueError(f"Undefined transfer with id {id!r}")
 
-  # Get a train type with the specified id
-  def get_train_type(self, id):
-    return self.train_types[id]
+  # Return all modalities
+  def get_modalities(self):
+    return self.modalities.values()
 
-  # Get all train types as a list
-  def get_train_types(self):
-    return list(self.train_types.values())
+  # Return a modality with the specified id
+  def get_modality(self, id):
+    try:
+      return self.modalities[id]
+    except KeyError:
+      raise ValueError(f"Undefined modality with id {id!r}")
 
-  # Register a train set
-  def register_train_set(self, id, **kwargs):
-    if id in self.train_sets:
-      raise ValueError(f"Duplicate train set id {id!r}")
+  # Add a modalitiy with the specified id and data and return it
+  def add_modality(self, id, **kwargs):
+    if id in self.modalities:
+      raise ValueError(f"Duplicate modalitiy id {id!r}")
 
-    train_set = TrainSet(self, id, **kwargs)
-    self.train_sets[id] = train_set
+    modality = Modality(self, id, **kwargs)
+    self.modalities[id] = modality
+    return modality
 
-  # Unregister a train set
-  def unregister_train_set(self, id):
-    if id in self.train_sets:
-      del self.train_sets[id]
+  # Return all routes
+  def get_routes(self):
+    return self.routes.values()
 
-  # Get a train set with the specified id
-  def get_train_set(self, id):
-    return self.train_sets[id]
+  # Return a route with the specified id
+  def get_route(self, id):
+    try:
+      return self.routes[id]
+    except KeyError:
+      raise ValueError(f"Undefined route with id {id!r}")
 
-  # Get all train sets as a list
-  def get_train_sets(self):
-    return list(self.train_sets.values())
+  # Return all trips
+  def get_trips(self):
+    return self.trips.values()
 
-  # Register a train
-  def register_train(self, id, **kwargs):
-    if id in self.trains:
-      raise ValueError(f"Duplicate train id {id!r}")
-
-    train = Train(self, id, **kwargs)
-    self.trains[id] = train
-
-  # Unregister a train
-  def unregister_train(self, id):
-    if id in self.trains:
-      del self.trains[train_id]
-
-  # Get a train with the specified id
-  def get_train(self, id):
-    return self.trains[id]
-
-  # Get all trains as a list
-  def get_trains(self):
-    return list(self.trains.values())
-
-  # Query a list of elements
-  def query(self, elements, query, *attributes):
-    # Get the default attributes
-    attributes = attributes or ['name']
-
-    # Get the order of a value
-    def order(value):
-      if not isinstance(value, str):
-        return -1
-      return value.lower().find(query.lower())
-
-    # Get the orders of an element
-    def orders(element):
-      for attribute in attributes:
-        try:
-          value = getattr(element, attribute)
-          yield order(value)
-        except AttributeError:
-          yield -1
-
-    # Create a list of matched elements
-    matched = []
-    for element in elements:
-      element_orders = tuple(orders(element))
-      if -1 in element_orders:
-        continue
-      matched.append((element_orders, element))
-
-    # Sort the matched elements
-    matched = sorted(matched)
-
-    # Return the actual matched elements
-    return [element for _, element in matched]
-
-  # Return the internal representation for this feed
-  def __repr__(self):
-    return f"<{__name__}.{self.__class__.__name__} {self.name!r}>"
+  # Return a trip with the specified id
+  def get_trip(self, id):
+    try:
+      return self.trips.get[id]
+    except KeyError:
+      raise ValueError(f"Undefined trip with id {id!r}")

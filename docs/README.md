@@ -225,9 +225,9 @@ Naam | Type | Verplicht | Beschrijving
 `stops` | `table` | **Ja** | De punten waar de route stopt of die de route passeert.
 `name` | `string` | **Ja** | De naam van de route.
 `abbr` | `string` | Nee | De afkorting van de route.
-`priority` | `int` | Nee | De prioriteit van de route. Dit veld kan worden ingevuld als deze afwijkt van de prioriteit van de vervoerswijze.
 `remarks` | `table` | Nee | Opmerkingen behorend tot de route in de vorm van een tabel zoals hieronder beschreven.
 `services` | `table` | Nee | Voorzieningen behorend tot de route in de vorm van een tabel zoals hieronder beschreven.
+`priority` | `int` | Nee | De prioriteit van de route. Dit veld kan worden ingevuld als deze afwijkt van de prioriteit van de vervoerswijze.
 `color_text` | `string` | Nee | De kleur van de tekst wanneer de route als lijnnummer wordt weergegeven. Dit veld kan worden ingevuld als deze afwijkt van de tekstkleur van de vervoerswijze.
 `color_bg` | `string` | Nee | De kleur van de achtergrond wanneer de route als lijnnummer wordt weergegeven. Dit veld kan worden ingevuld als deze afwijkt van de achtergrondkleur van de vervoerswijze.
 

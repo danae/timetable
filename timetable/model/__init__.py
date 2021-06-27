@@ -1,8 +1,9 @@
 from .agency import Agency
 from .feed import Feed
+from .modality import Modality, ModalityType
 from .node import Node, NodeType
-from .route import Route, RoutePoint, RoutePointType
-from .train import Train
-from .train_set import TrainSet
-from .train_type import TrainType
+from .route import Route
+from .stop import StopList, Stop
+from .transfer import Transfer
+from .trip import Trip
 from .utils import Time
