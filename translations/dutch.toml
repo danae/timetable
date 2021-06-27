@@ -1,0 +1,48 @@
+language_name = "Nederlands"
+language_author = "Danae"
+
+[translations.tabs]
+planner = "planner"
+departures = "vertrektijden"
+
+[translations.planner.form]
+input_from_node = "van"
+input_to_node = "naar"
+input_day = "dag"
+input_time = "time"
+input_departure = "vertrek"
+input_arrival = "aankomst"
+submit = "plan mijn reis"
+
+[translations.planner.details]
+header = "Reisadvies van <b>{from_node}</b> naar <b>{to_node}</b>"
+header_subtitle = "Vertrek op {date} om {time}"
+earlier = "vroeger"
+later = "later"
+
+[translations.planner.remarks]
+international = "Deze trein overschrijdt een landsgrens. Zorg voor geldige reisdocumenten!"
+res_recommended = "Voor deze trein is een reservering aanbevolen."
+res_required = "Voor deze trein is een reservering verplicht."
+supplement = "Voor deze trein dient een toeslag te worden betaald."
+
+[translations.planner.services]
+night_service = "Nachttrein"
+sleeping_car = "Slaaprijtuig"
+first_only = "Alleen eerste klas"
+second_only = "Alleen tweede klas"
+coffee = "Koffieautomaat"
+bistro = "Bistro aan boord"
+restaurant = "Restauratierijtuig"
+luggage = "Bagageafdeling"
+
+[translations.departures.form]
+input_node = "station"
+submit = "bekijk tijden"
+
+[translations.departures.details]
+header = "Vertrektijden voor <b>{node}</b>"
+table_departure = "vertrek"
+table_number = "nummer"
+table_destination = "bestemming"
+table_train = "trein"
