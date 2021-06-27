@@ -12,14 +12,14 @@ abbr = "NS"
 
 # Definities van stations
 [nodes]
-nl_rtd = {name = "Rotterdam Centraal", node = true, train_types = ["nl_ic", "nl_spr"]}
-nl_rtda = {name = "Rotterdam Alexander", train_types = ["nl_ic", "nl_spr"]}
-nl_gd = {name = "Gouda", node = true, train_types = ["nl_ic", "nl_spr"]}
-nl_ut = {name = "Utrecht Centraal", node = true, train_types = ["nl_ic", "nl_spr"]}
-nl_amf = {name = "Amersfoort Centraal", node = true, train_types = ["nl_ic", "nl_spr"]}
-nl_zl = {name = "Zwolle", node = true, train_types = ["nl_ic", "nl_spr"]}
-nl_asn = {name = "Assen", train_types = ["nl_ic", "nl_spr"]}
-nl_gn = {name = "Groningen", node = true, train_types = ["nl_ic", "nl_spr"]}
+nl_rtd = {name = "Rotterdam Centraal", node = true, modalities = ["nl_ic", "nl_spr"]}
+nl_rtda = {name = "Rotterdam Alexander", modalities = ["nl_ic", "nl_spr"]}
+nl_gd = {name = "Gouda", node = true, modalities = ["nl_ic", "nl_spr"]}
+nl_ut = {name = "Utrecht Centraal", node = true, modalities = ["nl_ic", "nl_spr"]}
+nl_amf = {name = "Amersfoort Centraal", node = true, modalities = ["nl_ic", "nl_spr"]}
+nl_zl = {name = "Zwolle", node = true, modalities = ["nl_ic", "nl_spr"]}
+nl_asn = {name = "Assen", modalities = ["nl_ic", "nl_spr"]}
+nl_gn = {name = "Groningen", node = true, modalities = ["nl_ic", "nl_spr"]}
 
 
 # Definities van vervoerswijzen (treintypes)
