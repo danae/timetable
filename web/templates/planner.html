@@ -84,8 +84,8 @@
     // Event handler when the document is ready
     $(function() {
       // Make station lists
-      stationInput('#from_node', '{{ url_for("nodes.get_nodes", _external = True) }}');
-      stationInput('#to_node', '{{ url_for("nodes.get_nodes", _external = True) }}');
+      stationInput('#from_node', '{{ url_for("nodes.query_nodes", _external = True) }}');
+      stationInput('#to_node', '{{ url_for("nodes.query_nodes", _external = True) }}');
 
       // Get the current date
       let now = new Date();

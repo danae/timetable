@@ -7,7 +7,7 @@
 {% block planner_content %}
   <p class="is-size-4 has-background-primary has-text-white px-4 py-2 mb-0">
     <span>Reisadvies van <b>{{ from_node }}</b> naar <b>{{ to_node }}</b></span><br>
-    <span class="is-size-6">{% if is_arrival %}Aankomst{% else %}Vertrek{% endif %} om {{ time }}
+    <span class="is-size-6">{% if is_arrival %}Aankomst{% else %}Vertrek{% endif %} om {{ time.__format__('%H:%M') }}
   </p>
 
   {% if journeys %}
@@ -26,7 +26,7 @@
     </div>
 
     {% for journey in journeys %}
-      <div class="fold" id="journey{{ loop.index }}">
+      <div class="fold" id="journey{{ loop.index }}" style="display: none;">
         <table class="table departures is-narrow">
           <tbody>
             {% for leg in journey.legs %}
@@ -129,10 +129,13 @@
         </table>
       </div>
     {% endfor %}
+  {% else %}
+    <p class="px-4 py-1">Er is geen reisadvies gevonden.</p>
   {% endif %}
 {% endblock %}
 
 {% block scripts %}
+  {{ super() }}
   <script>
     // Event handler when the document is ready
     $(function() {
@@ -140,6 +143,8 @@
       let folds = $('.fold');
       folds.hide();
       folds.first().show();
+
+      $('a[data-fold]').first().removeClass('is-outlined');
     });
 
     // Event handler when a fold button is clicked

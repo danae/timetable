@@ -54,7 +54,7 @@ class RaptorAlgorithm:
             arrival_at_node = trip.stops.get_arrival_at_node(stop.node)
 
             # Improve the arrival time if it's smaller than the current best
-            if arrival_at_node < best_arrivals[stop.node]:
+            if arrival_at_node is not None and arrival_at_node < best_arrivals[stop.node]:
               k_arrivals[k][stop.node] = best_arrivals[stop.node] = arrival_at_node
               if stop.node not in k_connections:
                 k_connections[stop.node] = {}
@@ -107,6 +107,10 @@ class RaptorAlgorithm:
 
     # Create a list of journeys
     journeys = []
+
+    # Check if there are connections to the arrival node
+    if arrival_node not in k_connections:
+      return journeys
 
     # Iterate over the connections from departure_node to arrival_node
     for k in k_connections[arrival_node]:

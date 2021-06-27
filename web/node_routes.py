@@ -9,14 +9,21 @@ blueprint = flask.Blueprint('nodes', __name__)
 # Return all nodes as JSON
 @blueprint.route('/nodes.json')
 def get_nodes():
+  # Get all nodes
+  nodes = flask.g.feed.get_nodes()
+
+  # Return the nodes as JSON
+  return flask.jsonify([node.to_json() for node in nodes])
+
+
+# Return all niodes that match a query as JSON
+@blueprint.route('/nodes/query.json')
+def query_nodes():
   # Get the query
   q = flask.request.args.get('q')
 
-  # Get all nodes
-  if q is not None:
-    nodes = flask.g.feed.query_nodes(q)
-  else:
-    nodes = flask.g.feed.get_nodes()
+  # Get all nodes the match the query
+  nodes = timetable.query(flask.g.feed.get_nodes(), q)
 
   # Return the nodes as JSON
   return flask.jsonify([node.to_json() for node in nodes])
