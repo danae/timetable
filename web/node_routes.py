@@ -3,11 +3,11 @@ import timetable
 
 
 # Create the blueprint
-node_routes_blueprint = flask.Blueprint('nodes', __name__)
+blueprint = flask.Blueprint('nodes', __name__)
 
 
 # Return all nodes as JSON
-@node_routes_blueprint.route('/nodes.json')
+@blueprint.route('/nodes.json')
 def get_nodes():
   # Get the query
   q = flask.request.args.get('q')
@@ -23,12 +23,11 @@ def get_nodes():
 
 
 # Return a node as JSON
-@node_routes_blueprint.route('/nodes/<string:id>.json')
+@blueprint.route('/nodes/<string:id>.json')
 def get_node(id):
   # Get the node
-  try:
-    node = flask.g.feed.get_node(id)
-  except KeyError as err:
+  node = flask.g.feed.get_node(id)
+  if node is None:
     flask.abort(404)
 
   # Return the node as JSON
@@ -36,16 +35,15 @@ def get_node(id):
 
 
 # Return the trains at a node as JSON
-@node_routes_blueprint.route('/nodes/<string:id>/trains.json')
+@blueprint.route('/nodes/<string:id>/trains.json')
 def get_node_trains(id):
   # Get the request parameters
   departures = flask.request.args.get('departures', default = True, type = bool)
   arrivals = flask.request.args.get('arrivals', default = True, type = bool)
 
   # Get the node
-  try:
-    node = flask.g.feed.get_node(id)
-  except KeyError as err:
+  node = flask.g.feed.get_node(id)
+  if node is None:
     flask.abort(404)
 
   # Get the trains at the node

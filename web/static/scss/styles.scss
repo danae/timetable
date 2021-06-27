@@ -2,14 +2,6 @@
 @import 'variables';
 @import 'bulma';
 
-// Footer styling
-.footer {
-  @extend .is-size-7;
-  @extend .py-5;
-
-  background: none;
-}
-
 // Content styling
 .content {
   // Heading styling
@@ -40,62 +32,99 @@
       border-bottom-color: $link-hover;
     }
 
-    // Inline link
-    &.inline {
-      color: inherit;
-      border-bottom-color: inherit;
-    }
-
     // Links in the footer have no border
     .footer > & {
       border-bottom: none;
     }
   }
+}
 
-  // Button styling
-  .button {
-    @extend .is-rounded;
-    @extend .is-outlined;
+// Button styling
+.button[type="submit"] {
+  @extend .is-uppercase;
+  @extend .has-text-weight-bold;
+}
 
-    &:hover, &:active {
-      .icon {
-        @extend .has-text-light;
-      }
-    }
+// Background styling
+.background {
+  @extend .has-background-primary-light;
 
-    &.is-fullwidth {
-      justify-content: flex-start;
-    }
-  }
-
-  // Alignment with margins
-  .is-aligned-left {
-    margin-right: auto !important;
-  }
-  .is-aligned-right {
-    margin-left: auto !important;
-  }
-  .is-aligned-center {
-    margin-left: auto !important;
-    margin-right: auto !important;
+  // Direct children will be a container
+  & > * {
+    @extend .container;
   }
 }
 
-// Hero styling
-.hero {
-  // Hero cover background
-  &.has-background-cover {
-    background-image: url("../images/melodie_cover.png");
-    background-size: cover;
-    background-position: top;
-    background-repeat: no-repeat;
+// Container margin on touch devices
+@media (max-width: $desktop) {
+  .container {
+    margin: 0px 1rem;
   }
 }
 
-// Emoji styling
-.emoji {
-  height: 1em;
-  width: 1em;
-  margin: 0 .05em 0 .1em;
-  vertical-align: -0.1em;
+// Header styling
+header {
+  @extend .container;
+  @extend .py-6;
+}
+
+// Nav styling
+nav {
+  @extend .container;
+
+  // Position the nav under the successor
+  z-index: 2;
+
+  // Direct successors will be positioned over the nav
+  & + * {
+    // Position the successor over the nav
+    z-index: 1;
+    margin-top: calc(-1 * #{$tabs-border-bottom-width});
+  }
+}
+
+// Outer content styling
+main {
+  @extend .container;
+  @extend .has-background-white;
+
+  border: 1px solid $primary;
+  border-top: none;
+}
+
+// Footer styling
+footer {
+  @extend .container;
+  @extend .is-size-7;
+  @extend .has-text-centered;
+  @extend .py-5;
+}
+
+// Table styling
+.table {
+  width: 100%;
+
+  &.departures td {
+    vertical-align: middle;
+  }
+}
+
+.button, .input {
+  @extend .is-radiusless;
+  @extend .is-shadowless;
+}
+
+// Dropdown styling
+.dropdown {
+  // Dropdown menu
+  .dropdown-content {
+    max-height: 25rem;
+    overflow-y: auto;
+  }
+
+  // Dropdown item
+  .dropdown-item {
+    @extend .is-size-7;
+    @extend .py-1;
+  }
 }

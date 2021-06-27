@@ -1,0 +1,158 @@
+{% extends 'planner.html' %}
+
+{% block title %}
+  Reisadvies van {{ from_node }} naar {{ to_node }}
+{% endblock %}
+
+{% block planner_content %}
+  <p class="is-size-4 has-background-primary has-text-white px-4 py-2 mb-0">
+    <span>Reisadvies van <b>{{ from_node }}</b> naar <b>{{ to_node }}</b></span><br>
+    <span class="is-size-6">{% if is_arrival %}Aankomst{% else %}Vertrek{% endif %} om {{ time }}
+  </p>
+
+  {% if journeys %}
+    <div class="buttons mb-0 px-4 py-4 has-background-light">
+      {% for journey in journeys %}
+        <a class="button is-primary is-outlined is-flex-direction-column py-5 mb-0" data-fold="journey{{ loop.index }}">
+          <p class="mb-0">
+            {{ journey.departure_time.__format__('%H:%M') }} &#8250; {{ journey.arrival_time.__format__('%H:%M') }}
+          </p>
+          <p class="is-size-7 mb-0">
+            <span class="mr-2">&#128337; {{ journey.duration.__format__('%H:%M') }}</span>
+            <span>&#128256; {{ journey.transfers }}</span>
+          </p>
+        </a>
+      {% endfor %}
+    </div>
+
+    {% for journey in journeys %}
+      <div class="fold" id="journey{{ loop.index }}">
+        <table class="table departures is-narrow">
+          <tbody>
+            {% for leg in journey.legs %}
+              {% if not loop.first %}
+                <tr>
+                  <td class="has-background-light" colspan="4" style="height: 2rem;">&nbsp;</td>
+                </tr>
+              {% endif %}
+
+              {% for stop in leg.trip.stops %}
+                {% if loop.first %}
+                  <tr>
+                    <td class="pb-0" style="width: 10%;">
+                      <p class="is-size-6 mb-0">
+                        {{ stop.departure.__format__('%H:%M') }}
+                      </p>
+                    </td>
+                    <td class="pb-0" style="width: 65%;">
+                      <p class="has-text-weight-bold mb-0">
+                        {{ stop.node }}
+                      </p>
+                    </td>
+                    <td class="pb-0" style="width: 25%;">
+                      <p class="has-text-right mb-0">
+                        <span>{{ leg.complete_trip.agency }} {{ leg.complete_trip.modality.name }} {{ leg.complete_trip.number }}</span>
+                      </p>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td style="width: 10%;">&nbsp;</td>
+                    <td colspan="2" style="width: 90%;">
+                      <p class="is-size-7 mb-0">
+                        <span class="px-1" style="color: {{ leg.complete_trip.color_text }}; background-color: {{ leg.complete_trip.color_bg }};">{{ leg.complete_trip.abbr }}</span>
+                        <span>&#8250;</span>
+                        <span>{{ leg.complete_trip.arrival_node }}</span>
+                      </p>
+                    </td>
+                  </tr>
+                {% elif not loop.last %}
+                  <tr>
+                    <td style="width: 10%;">
+                      <p class="is-size-7 mb-0">
+                        {{ stop.arrival.__format__('%H:%M') }}
+                      </p>
+                    </td>
+                    <td colspan="2" style="width: 90%;">
+                      <p class="is-size-7 mb-0">
+                        {{ stop.node }}
+                      </p>
+                    </td>
+                  </tr>
+                {% else %}
+                  <tr>
+                    <td style="width: 10%;">
+                      <p class="is-size-6 mb-0">
+                        {{ stop.arrival.__format__('%H:%M') }}
+                      </p>
+                    </td>
+                    <td colspan="2" style="width: 90%;">
+                      <p class="has-text-weight-bold mb-0">
+                        {{ stop.node }}
+                      </p>
+                    </td>
+                  </tr>
+                {% endif %}
+              {% endfor %}
+            {% endfor %}
+            {% for trip in trips %}
+              <tr style="height: 3.5rem;">
+                <td>
+                  <p class="is-size-5 mb-0">
+                    {{ trip.canonical_time.__format__('%H:%M') }}
+                  </p>
+                </td>
+                <td>
+                  <p class="mb-0">
+                    <span class="px-1" style="color: {{ trip.color_text }}; background-color: {{ trip.color_bg }};">{{ trip.abbr }}</span>
+                  </p>
+                </td>
+                <td>
+                  <p class="has-text-weight-bold mb-0">
+                    {{ trip.arrival_node }}
+                  </p>
+                  {% if trip.nodes[1:-1] %}
+                    <p class="is-size-7 mb-0">
+                      {{ trip.nodes[1:-1] | join(', ') }}
+                    </p>
+                  {% endif %}
+                </td>
+                <td>
+                  <p class="is-size-7 mb-0">
+                    <span class="has-text-weight-bold">{{ trip.agency }} {{ trip.modality }}</span><br>
+                    <span>{{ trip.number }}</span>
+                  </p>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    // Event handler when the document is ready
+    $(function() {
+      // Hide all folds except the first
+      let folds = $('.fold');
+      folds.hide();
+      folds.first().show();
+    });
+
+    // Event handler when a fold button is clicked
+    $('a[data-fold]').on('click', function() {
+      let elm = $(this);
+      let elmTarget = elm.attr('data-fold');
+
+      let folds = $('.fold');
+      folds.hide();
+      folds.filter(`#${elmTarget}`).show();
+
+      $('a[data-fold]').addClass('is-outlined');
+      elm.removeClass('is-outlined');
+    });
+  </script>
+{% endblock %}

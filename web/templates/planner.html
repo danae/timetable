@@ -1,0 +1,100 @@
+{% extends 'index.html' %}
+
+{% block title %}
+  Planner
+{% endblock %}
+
+{% block content %}
+  <div class="columns is-gapless">
+    <div class="column is-4">
+      <section class="section">
+        {% if error %}
+          <p class="has-text-danger mb-3">
+            <span class="icon-text">
+              <span class="icon"><i class="fas fa-exclamation-triangle"></i></span>
+              <span>
+                {% if error == 'from_node_not_found' %}
+                  Het vertrekstation is niet gevonden.
+                {% elif error == 'to_node_not_found' %}
+                  Het aankomststation is niet gevonden.
+                {% endif %}
+              </span>
+            </span>
+          </p>
+        {% endif %}
+
+        <form method="GET" action="{{ url_for('frontend.planner_details') }}">
+          <div class="field">
+            <label class="label has-text-weight-normal mb-0" for="from_node">van</label>
+            <div class="control">
+              <input class="input is-small" type="text" name="from_node" id="from_node" value="{{ from_node | default('', true) }}">
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label has-text-weight-normal mb-0" for="to_node">naar</label>
+            <div class="control">
+              <input class="input is-small" type="text" name="to_node" id="to_node" value="{{ to_node | default('', true) }}">
+            </div>
+          </div>
+
+          <div class="columns is-mobile">
+            <div class="column is-7">
+              <div class="field">
+                <label class="label has-text-weight-normal mb-0" for="day">dag</label>
+                <div class="control">
+                  <input class="input is-small" type="text" name="day" id="day" placeholder="vandaag" value="{{ date | default('', true) }}" readonly>
+                </div>
+              </div>
+            </div>
+
+            <div class="column is-5">
+              <div class="field">
+                <label class="label has-text-weight-normal mb-0" for="time">tijd</label>
+                <div class="control">
+                  <input class="input is-small" type="time" name="time" value="{{ time | default('', true) }}" id="time">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="has-text-primary mr-1" for="is_arrival">vertrek</label>
+            <input class="switch is-rounded" type="checkbox" name="is_arrival" id="is_arrival">
+            <label class="has-text-primary" for="is_arrival">aankomst</label>
+          </div>
+
+          <button class="button is-primary mt-5" type="submit">plan mijn reis</button>
+        </form>
+      </section>
+    </div>
+
+    <div class="column is-8">
+      {% block planner_content %}
+        <figure class="image is-4by3 is-hidden-mobile">
+          <img src="{{ request.root_url }}/static/images/bg-planner.PNG">
+        </figure>
+      {% endblock %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    // Event handler when the document is ready
+    $(function() {
+      // Make station lists
+      stationInput('#from_node', '{{ url_for("nodes.get_nodes", _external = True) }}');
+      stationInput('#to_node', '{{ url_for("nodes.get_nodes", _external = True) }}');
+
+      // Get the current date
+      let now = new Date();
+      let hours = now.getHours().toString().padStart(2, '0');
+      let minutes = now.getMinutes().toString().padStart(2, '0');
+
+      // Set the default time value
+      if ($('#time').val() === "")
+        $('#time').val(`${hours}:${minutes}`);
+    });
+  </script>
+{% endblock %}

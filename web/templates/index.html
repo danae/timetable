@@ -9,20 +9,71 @@
     <!-- Stylesheet -->
     <link rel="stylesheet" href="{{ request.root_url }}/static/css/styles.css">
 
+    <!-- Shortcut icon -->
+    <link rel="shortcut icon" href="{{ request.root_url }}/static/images/16px-icon.png">
+    <link rel="icon" type="image/png" href="{{ request.root_url }}/static/images/16px-icon.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="{{ request.root_url }}/static/images/32px-icon.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{ request.root_url }}/static/images/64px-icon.png" sizes="64x64">
+    <link rel="icon" type="image/png" href="{{ request.root_url }}/static/images/96px-icon.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="{{ request.root_url }}/static/images/128px-icon.png" sizes="128x128">
+    <link rel="icon" type="image/png" href="{{ request.root_url }}/static/images/256px-icon.png" sizes="256x256">
+    <link rel="icon" type="image/png" href="{{ request.root_url }}/static/images/512px-icon.png" sizes="512x512">
+
     <!-- Title -->
-    <title>Timetable {{ request.root_url }}/</title>
+    <title>
+      {% block title %}Home{% endblock %} &ndash; Mekatoris
+    </title>
   </head>
 
   <body>
-    <!-- Container -->
-    <div class="container">
-      {% block content %}
-      {% endblock %}
-    </div>
+    <!-- Header -->
+    <header>
+      <div class="level is-align-items-baseline">
+        <div class="level-left">
+          <div class="level-item">
+            <img src="{{ request.root_url }}/static/images/logo.png">
+          </div>
+        </div>
+
+        <div class="level-right">
+          <div class="level-item">
+            &nbsp;
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+      <div class="tabs is-boxed is-uppercase has-text-weight-bold">
+        <ul>
+          <li {% if request.path.startswith(url_for('frontend.planner')) %}class="is-active"{% endif %}>
+            <a href="{{ url_for('frontend.planner') }}">planner</a>
+          </li>
+          <li {% if request.path.startswith(url_for('frontend.departures')) %}class="is-active"{% endif %}>
+            <a href="{{ url_for('frontend.departures') }}">vertrektijden</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Content -->
+    <section class="background">
+      <main>
+        {% block content %}
+        {% endblock %}
+      </main>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <p>Onderdeel van geofictieproject <a href="https://garah.nl/">Garah</a> &middot; Gemaakt met <a target="_blank" href="https://bulma.io">Bulma</a> en <a target="_blank" href="https://fontawesome.com/">Font Awesome</a></p>
+    </footer>
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
     <script src="{{ request.root_url }}/static/fontawesome/js/all.js"></script>
+    <script src="{{ request.root_url }}/static/js/index.js"></script>
 
     {% block scripts %}
     {% endblock %}

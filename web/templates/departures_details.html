@@ -1,0 +1,59 @@
+{% extends 'departures.html' %}
+
+{% block title %}
+  Vertrektijden voor {{ node }}
+{% endblock %}
+
+{% block departures_content %}
+  <p class="is-size-4 has-background-primary has-text-white px-4 py-2 mb-0">
+    <span>Vertrektijden voor <b>{{ node }}</b></span>
+  </p>
+
+  {% if trips %}
+    <table class="table departures is-striped is-narrow">
+      <thead>
+        <tr>
+          <th class="is-size-7" style="width: 10%;">vertrek</th>
+          <th class="is-size-7" style="width: 15%;">nummer</th>
+          <th class="is-size-7" style="width: 55%;">bestemming</th>
+          <th class="is-size-7" style="width: 20%;">trein</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for trip in trips %}
+          <tr style="height: 3.5rem;">
+            <td>
+              <p class="is-size-5 mb-0">
+                {{ trip.canonical_time.__format__('%H:%M') }}
+              </p>
+            </td>
+            <td>
+              <p class="mb-0">
+                <span class="px-1" style="color: {{ trip.color_text }}; background-color: {{ trip.color_bg }};">{{ trip.abbr }}</span>
+              </p>
+            </td>
+            <td>
+              <p class="has-text-weight-bold mb-0">
+                {{ trip.arrival_node }}
+              </p>
+              {% if trip.nodes[1:-1] %}
+                <p class="is-size-7 mb-0">
+                  {{ trip.nodes[1:-1] | join(', ') }}
+                </p>
+              {% endif %}
+            </td>
+            <td>
+              <p class="is-size-7 mb-0">
+                <span class="has-text-weight-bold">{{ trip.agency }} {{ trip.modality }}</span><br>
+                <span>{{ trip.number }}</span>
+              </p>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="px-4 py-1">Er is op het moment geen informatie beschikbaar</p>
+  {% endif %}
+{% endblock %}
