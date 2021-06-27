@@ -5,7 +5,7 @@ async function get(url, query)
   for (key in query)
     url.searchParams.append(key, query[key])
 
-  let response = await fetch(url, {mode: 'no-cors'});
+  let response = await fetch(url, {mode: 'same-origin'});
   let response_json = await response.json();
   return response_json;
 }
