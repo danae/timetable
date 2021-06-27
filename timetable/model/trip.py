@@ -4,7 +4,7 @@ import functools
 
 
 # Class that defines a trip
-# Trips sort chronologically based on their numbers and times
+# Trips sort chronologically based on their canonical times and numbers
 @functools.total_ordering
 class Trip:
   # Constructor
@@ -14,7 +14,7 @@ class Trip:
 
     # Add required properties
     self.route = kwargs['route']
-    self.stops = kwargs['stops'] #resolve_stops(self.feed, self.route.stops, kwargs.get('stops'), kwargs.get('time'), kwargs.get('begin_at'), kwargs.get('end_at'))
+    self.stops = kwargs['stops']
 
     # Add optional properties
     self.agency = kwargs.get('agency', self.route.agency)  # Defaults to agency of the route
@@ -25,8 +25,8 @@ class Trip:
     self.priority = kwargs.get('priority', self.route.priority)  # Defaults to priority of the route
     self.remarks = kwargs.get('remarks', self.route.remarks)  # Defaults to remarks of the route
     self.services = kwargs.get('services', self.route.services)  # Defaults to services of the route
-    self.color_text = kwargs.get('color_text', 'inherit')  # Defaults to color_text of the route
-    self.color_bg = kwargs.get('color_bg', 'inherit')  # Defaults to color_bg of the route
+    self.color_text = kwargs.get('color_text', self.route.color_text)  # Defaults to color_text of the route
+    self.color_bg = kwargs.get('color_bg', self.route.color_bg)  # Defaults to color_bg of the route
 
   # Return the nodes that this trip stops at or passes through
   def get_nodes(self, skips = False):
@@ -62,15 +62,20 @@ class Trip:
   def arrival_time(self):
     return self.arrival.arrival
 
+  # Return the canonical time of this trip
+  @property
+  def canonical_time(self):
+    return self.departure_time or self.arrival_time
+
   # Return the duration of this trip
   @property
   def duration(self):
     return self.arrival_time - self.departure_time
 
-  # Return the canonical time of this trip
+  # Return the nodes of this trip
   @property
-  def canonical_time(self):
-    return self.stops.canonical_time
+  def nodes(self):
+    return [stop.node for stop in self.stops]
 
   # Return the trip beginning at the specified node
   def beginning_at_node(self, node):
@@ -94,7 +99,7 @@ class Trip:
   def __lt__(self, other):
     if not isinstance(other, self.__class__):
       return NotImplemented
-    return (self.number, self.time, self.id) < (other.number, other.time, other.id)
+    return (self.canonical_time, self.number, self.id) < (other.canonical_time, other.number, other.id)
 
   # Return the hash for this trip
   def __hash__(self):
@@ -113,11 +118,14 @@ class Trip:
     return collections.OrderedDict(
       id = self.id,
       agency = self.agency.to_json(),
-      type = self.type.to_json(),
+      modality = self.modality.to_json(),
       name = self.name,
       abbr = self.abbr,
-      description = self.description,
+      number = self.number,
+      remarks = self.remarks,
+      services = self.services,
+      priority = self.priority,
       color_text = self.color_text,
       color_bg = self.color_bg,
-      route = self.route.to_json(),
+      stops = self.stops.to_json(),
     )

@@ -52,7 +52,7 @@ class Modality:
 
   # Return the string representation for this modality
   def __str__(self):
-    return self.abbr or self.name
+    return self.name
 
   # Return the JSON representation for this modality
   def to_json(self):

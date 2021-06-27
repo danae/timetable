@@ -54,5 +54,4 @@ class Agency:
       id = self.id,
       name = self.name,
       abbr = self.abbr,
-      description = self.description,
     )

@@ -58,7 +58,7 @@ class RaptorAlgorithm:
               k_arrivals[k][stop.node] = best_arrivals[stop.node] = arrival_at_node
               if stop.node not in k_connections:
                 k_connections[stop.node] = {}
-              k_connections[stop.node][k] = trip.beginning_at_node(start_node).ending_at_node(stop.node)
+              k_connections[stop.node][k] = trip.beginning_at_node(start_node)
               marked_nodes.add(stop.node)
 
           # Can we catch an earlier trip at the node?
@@ -124,7 +124,7 @@ class RaptorAlgorithm:
         # Append a new leg
         if isinstance(k_connection, Trip):
           from_node = k_connection.departure.node
-          legs.insert(0, JourneyTripLeg(from_node, to_node, k_connection))
+          legs.insert(0, JourneyTripLeg(from_node, to_node, k_connection.ending_at_node(to_node), k_connection))
           to_node = from_node
         elif isinstance(k_connection, Transfer):
           from_node = k_connection.start
@@ -138,4 +138,4 @@ class RaptorAlgorithm:
       journeys.append(Journey(departure_node, arrival_node, legs))
 
     # Return the journeys
-    return journeys
+    return sorted(journeys, key = lambda journey: journey.departure_time)

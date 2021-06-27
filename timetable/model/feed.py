@@ -89,6 +89,6 @@ class Feed:
   # Return a trip with the specified id
   def get_trip(self, id):
     try:
-      return self.trips.get[id]
+      return self.trips[id]
     except KeyError:
       raise ValueError(f"Undefined trip with id {id!r}")

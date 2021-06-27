@@ -65,11 +65,12 @@ class Route:
       agency = self.agency.to_json(),
       modality = self.modality.to_json(),
       name = self.name,
-      stops = self.stops.to_json() if stops else None,
       abbr = self.abbr,
+      number = self.number,
       remarks = self.remarks,
       services = self.services,
       priority = self.priority,
       color_text = self.color_text,
       color_bg = self.color_bg,
+      stops = self.stops.to_json(),
     )

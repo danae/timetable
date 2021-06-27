@@ -45,10 +45,11 @@ class Journey:
 # Class that defines a journey leg that encapsulates a trip
 class JourneyTripLeg:
   # Constructor
-  def __init__(self, from_node, to_node, trip):
+  def __init__(self, from_node, to_node, trip, complete_trip = None):
     self.from_node = from_node
     self.to_node = to_node
     self.trip = trip
+    self.complete_trip = complete_trip or self.trip
 
   # Get the departure time of this leg
   @property

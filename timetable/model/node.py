@@ -69,7 +69,6 @@ class Node:
       name = self.name,
       short_name = self.short_name,
       abbr = self.abbr,
-      description = self.description,
       type = self.type.name,
       x = self.x,
       y = self.y,

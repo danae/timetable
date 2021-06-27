@@ -87,11 +87,6 @@ class StopList:
   def arrival(self):
     return self.stops[-1] if self.stops else None
 
-  # Return the canonical time of this stop list
-  @property
-  def canonical_time(self):
-    return self.departure.departure or self.arrival.arrival
-
   # Return an iterator for this stop list
   def __iter__(self):
     return iter(self.stops)
